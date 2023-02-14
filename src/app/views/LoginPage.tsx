@@ -1,8 +1,17 @@
 import logo from "../../assets/logo.png"
-import { Button ,Form, FormControl, FormLabel, InputGroup} from 'react-bootstrap'
+import { Button ,Form, FormControl, FormLabel, InputGroup, Spinner} from 'react-bootstrap'
 import { BsEnvelope } from 'react-icons/bs'
 import {BiLockAlt} from "react-icons/bi";
+import { useState } from "react";
+import { loginParams, useLoginMutation } from "../features/auth/login";
+import { useAppDispatch } from "../hooks";
+import { AuthState, setCredentials } from "../features/auth/auth-slice";
 function LoginPage() {
+    const [loginp,setLoginparams] = useState(new loginParams("",""))
+    const [login,{isLoading}] = useLoginMutation();
+  
+    const [error,setError] = useState(false);
+    const dispatch = useAppDispatch();
   return (
     <div className='main-login'>
 
@@ -33,7 +42,9 @@ function LoginPage() {
                 <BsEnvelope />
                 </InputGroup.Text>
                 
-            <FormControl className='border-start-0' type='text' placeholder='votre email' /> 
+            <FormControl className='border-start-0' type='text' placeholder='votre email' value={loginp.email} 
+              onChange={e => setLoginparams(loginp => ({...loginp, email: e.target.value }))}
+              /> 
             </InputGroup>
 
         </Form.Group>
@@ -46,11 +57,35 @@ function LoginPage() {
 
                 </InputGroup.Text>
                 
-            <FormControl className='border-start-0' type='password' placeholder='votre mot de passe' /> 
+            <FormControl className='border-start-0' type='password' placeholder='votre mot de passe' 
+                value={loginp.password} 
+                onChange={e => setLoginparams(loginp => ({...loginp, password: e.target.value}))}
+            
+            /> 
             </InputGroup>
 
         </Form.Group>
-        <Button className='w-100 main-btn py-3 my-3' >Se connecter</Button>
+        {
+          !isLoading? (
+        <Button className='w-100 main-btn py-3 my-3' onClick={async () => {
+          
+          
+            try {
+              
+              const  {id,name,token,role}   = await login(loginp).unwrap();
+              dispatch(setCredentials(new AuthState(true,token,name,id,role)));
+            } catch (error) {
+              setError(true); 
+              setTimeout(() => {
+               setError(false); 
+             }, 1500);
+              
+            }
+          
+         }} >Se connecter</Button>):
+        <Spinner animation="border" variant='success' />
+
+        }
         <div className='d-flex flex-row justify-content-center'>
 
         <a href="/forget_password"  className='text-purple text-decoration-none text-center'>Mot de passe oublié ?</a>

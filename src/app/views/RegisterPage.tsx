@@ -35,9 +35,9 @@ function RegisterPage() {
 
         
     </div>
-    <div className='d-flex flex-row justify-content-center mt-3 py-4'>
+    <div className='d-flex flex-row justify-content-center mt-3 py-4 align-items-center'>
       {  screen != "specialite"  ?     
-   ( <div className="rounded card shadow py-4 px-5 ">
+   ( <div className="rounded card shadow py-4 px-5 my-5">
         <h2 className='text-center px-5 '>Allons-y !</h2>
        <Form className='px-3'>
        <Form.Group className='mt-3 mb-3'>
@@ -81,7 +81,7 @@ function RegisterPage() {
 
         </Form>  
     </div>) : (
-    <div className="rounded card shadow py-4 px-5 ">
+    <div className="rounded card shadow py-4 px-5 mb-5">
     <h2 className='text-center px-5 '>Allons-y !</h2>
     <Form.Group className='mt-3 mb-3'>
     <FormLabel> Département</FormLabel>
@@ -100,8 +100,8 @@ function RegisterPage() {
     </div>)
     }
     </div>
-    <div className='z_index text-white d-flex flex-row justify-content-center'>
-        <span className='card bg-transparent border-0 d-flex flex-row'>
+    <div className='z_index text-white d-flex flex-row justify-content-center mt-5 '>
+        <span className='card bg-transparent border-0 d-flex flex-row mt-5 '>
 
         vous avez un compte ?&nbsp; <a className='d-inline text-light' href="/login">Se connecter</a>   
         </span>

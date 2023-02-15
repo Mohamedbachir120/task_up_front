@@ -59,7 +59,7 @@
   z-index: 2 ! important;
 }
 .card .main-btn{
-  box-shadow: #7c68ee5e 10px 10px 100px 30px;
+  box-shadow: #7c68ee5e 10px 10px 10px 10px;
 
 }
 .card .main-btn .input{

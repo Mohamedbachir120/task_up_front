@@ -21,7 +21,7 @@ function LoginPage() {
 
         
     </div>
-    <div className='d-flex flex-row justify-content-center mt-3 py-4'>
+    <div className='d-flex flex-row justify-content-center mt-5 py-4'>
 
     <div className="rounded card shadow py-4 px-5 ">
         <h2 className='text-center px-5 '>Bienvenue à nouveau !</h2>
@@ -60,7 +60,7 @@ function LoginPage() {
         </Form>  
     </div>
     </div>
-    <div className='z_index text-white d-flex flex-row justify-content-center'>
+    <div className='z_index text-white d-flex flex-row justify-content-center my-5'>
         <span className='card bg-transparent border-0 d-flex flex-row'>
 
         vous n'avez pas de compte ?&nbsp; <a className='d-inline text-light' href="/register">S'inscrire</a>   

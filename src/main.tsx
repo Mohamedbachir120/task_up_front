@@ -9,6 +9,8 @@ import RegisterPage from './app/views/RegisterPage'
 import Home from './app/views/Home'
 import { Provider } from 'react-redux'
 import { store } from './app/store'
+import PublicWrapper from './app/hoc/UnProtected'
+import PrivateWrapper from './app/hoc/Protected'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -18,18 +20,27 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <Routes>
         <Route path="/" element={<Navigate to="/login"  replace/>}   />
         <Route path='/login' element={
-          <LoginPage />
+          <PublicWrapper>
+
+            <LoginPage />
+          </PublicWrapper>
         }>
 
         </Route>
         <Route path='/register' element={
-          <RegisterPage />
+          <PublicWrapper>
+
+            <RegisterPage />
+          </PublicWrapper>
         }>
 
         </Route>
 
         <Route path='/home' element={
-          <Home />
+          <PrivateWrapper>
+
+            <Home />
+          </PrivateWrapper>
         }>
 
         </Route>

@@ -1,15 +1,18 @@
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
 import { Button } from 'react-bootstrap'
 import { SearchComponent } from './SideBar'
 import {AiOutlineDoubleRight} from "react-icons/ai";
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { MainUiState, hideMarginLeft, initialize } from '../features/mainUi'
+import { useLogoutMutation } from '../features/auth/login';
+import { signOut } from '../features/auth/auth-slice';
 
 function Header() {
   const uistate = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi);
   const dispatch =useAppDispatch()
+  const [logout,{isLoading}] = useLogoutMutation();
+
   return (
     <div className={`${uistate.margin_left} p-2 header_main d-flex flex-row justify-content-between align-items-center`}>
       {uistate.margin_left !="margin_left" && ( <button className='btn text-light' onClick={()=>{
@@ -28,7 +31,10 @@ function Header() {
         <SearchComponent />
 
         </div>
-        <Button variant='light' className='me-3 text-secondary '>
+        <Button variant='light' className='me-3 text-secondary ' onClick={()=>{
+            logout("");
+            dispatch(signOut());
+        }}>
             <FontAwesomeIcon icon={faSignOutAlt} />
         </Button>
     </div>

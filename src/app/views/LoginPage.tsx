@@ -1,17 +1,28 @@
 import logo from "../../assets/logo.png"
-import { Button ,Form, FormControl, FormLabel, InputGroup, Spinner} from 'react-bootstrap'
+import { Button ,Form, FormControl, FormLabel, InputGroup, Spinner, ToastContainer} from 'react-bootstrap'
 import { BsEnvelope } from 'react-icons/bs'
 import {BiLockAlt} from "react-icons/bi";
 import { useState } from "react";
 import { loginParams, useLoginMutation } from "../features/auth/login";
 import { useAppDispatch } from "../hooks";
 import { AuthState, setCredentials } from "../features/auth/auth-slice";
+import Loader from "../components/Loader";
+import Toast from 'react-bootstrap/Toast';
+
 function LoginPage() {
-    const [loginp,setLoginparams] = useState(new loginParams("",""))
+  function displayError(message:String){
+    setMessage(message)
+    setError(true); 
+    setTimeout(() => {
+     setError(false); 
+   }, 1500);
+  }
+  const [error,setError] = useState(false);
+  const [loginp,setLoginparams] = useState(new loginParams("",""))
     const [login,{isLoading}] = useLoginMutation();
-  
-    const [error,setError] = useState(false);
     const dispatch = useAppDispatch();
+    const [message,setMessage] = useState<String>("Veuillez remplir tous les champs")
+
   return (
     <div className='main-login'>
 
@@ -30,6 +41,21 @@ function LoginPage() {
 
         
     </div>
+    <ToastContainer position="bottom-end">
+    <Toast show={error} onClose={()=>setError(false)} >
+          <Toast.Header className="bg-danger text-white">
+            <img
+              src="holder.js/20x20?text=%20"
+              className="rounded me-2"
+              alt=""
+            />
+            <strong className="me-auto">Erreur</strong>
+            <small>Maintenant</small>
+          </Toast.Header>
+          <Toast.Body>{message}</Toast.Body>
+        </Toast>
+    </ToastContainer>
+
     <div className='d-flex flex-row justify-content-center mt-3 py-4'>
 
     <div className="rounded card shadow py-4 px-5 ">
@@ -42,7 +68,7 @@ function LoginPage() {
                 <BsEnvelope />
                 </InputGroup.Text>
                 
-            <FormControl className='border-start-0' type='text' placeholder='votre email' value={loginp.email} 
+            <FormControl className='border-start-0' type='email' placeholder='votre email' value={loginp.email} 
               onChange={e => setLoginparams(loginp => ({...loginp, email: e.target.value }))}
               /> 
             </InputGroup>
@@ -69,21 +95,25 @@ function LoginPage() {
           !isLoading? (
         <Button className='w-100 main-btn py-3 my-3' onClick={async () => {
           
-          
+            if(loginp.email.trim().length < 5 || loginp.password.trim().length < 4){
+              displayError("Veuillez remplir tous les champs")
+              return;
+            }
             try {
               
               const  {id,name,token,role}   = await login(loginp).unwrap();
               dispatch(setCredentials(new AuthState(true,token,name,id,role)));
             } catch (error) {
-              setError(true); 
-              setTimeout(() => {
-               setError(false); 
-             }, 1500);
+              displayError("Email ou mot de passse incorrecte");
+
+              
               
             }
           
          }} >Se connecter</Button>):
-        <Spinner animation="border" variant='success' />
+        <div className="d-flex flex-row justify-content-center">
+          <Loader /> 
+          </div>
 
         }
         <div className='d-flex flex-row justify-content-center'>
@@ -101,6 +131,8 @@ function LoginPage() {
         vous n'avez pas de compte ?&nbsp; <a className='d-inline text-light' href="/register">S'inscrire</a>   
         </span>
     </div>
+  
+
     <div className='bg'>
 
         </div>

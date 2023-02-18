@@ -6,10 +6,11 @@ import {AiOutlineDoubleRight} from "react-icons/ai";
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { MainUiState, hideMarginLeft, initialize } from '../features/mainUi'
 import { useLogoutMutation } from '../features/auth/login';
-import { signOut } from '../features/auth/auth-slice';
+import { AuthState, signOut } from '../features/auth/auth-slice';
 
 function Header() {
   const uistate = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi);
+  const auth = useAppSelector((state:{auth:AuthState}) => state.auth);
   const dispatch =useAppDispatch()
   const [logout,{isLoading}] = useLogoutMutation();
 
@@ -22,9 +23,9 @@ function Header() {
        </button>)}
         <div className='d-flex flex-row ms-5'>
 
-        <img   src="https://ui-avatars.com/api/?background=ffffff&color=666666&name=m" />
+        <img   src={`https://ui-avatars.com/api/?background=ffffff&color=666666&name=${auth.username.charAt(0)}`} />
         <p className='text-light pt-3 ms-3'>
-            Bonjour , Mohamed bachir
+            Bonjour , {auth.username}
         </p>
         </div>
         <div className='col-3'>

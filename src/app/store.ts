@@ -9,12 +9,11 @@ export const store = configureStore({
         auth: authReducer,
         [apiSlice.reducerPath]:apiSlice.reducer,
 
-
     },
     
     middleware:(getDefaultMiddleware)=>{
         return getDefaultMiddleware({serializableCheck:false}).concat(
-            apiSlice.middleware
+            apiSlice.middleware,
         )
 
     }

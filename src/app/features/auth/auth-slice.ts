@@ -45,12 +45,9 @@ const authSlice = createSlice({
             localStorage.removeItem('username');
             localStorage.removeItem('id');
             localStorage.removeItem("role");
-            state.isAuthenticated = false;
-            state.token = "";
-            state.username="";
-            state.id = 0;    
-                        
-            return state;
+         
+            return new AuthState(false,"","",0,"");
+         
         },
         
     }

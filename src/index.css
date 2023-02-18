@@ -140,3 +140,12 @@
   bottom: 2vw;
 
 }
+.ft-content{
+  max-height: fit-content;
+  height: -moz-max-content;
+  }
+.add_task_modal{
+  position: fixed !important;
+  right: 2vw;
+  bottom: 5vw;
+}

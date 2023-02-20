@@ -1,18 +1,24 @@
 import { createSlice,PayloadAction } from "@reduxjs/toolkit";
 import { SubTask } from "../../models/SubTask";
+import { User } from "../../models/User";
+import { Task } from "../../models/Task";
 
 export class AddTaskUiState{
-    constructor (showTaskModal:boolean,showDependanceModal:boolean,subTasks:[])  {
+    constructor (showTaskModal:boolean,showDependanceModal:boolean,subTasks:[],users:[],dependanceTask:Task)  {
            this.showTaskModal = showTaskModal;
            this.showDependanceModal = showDependanceModal;
            this.subTasks = subTasks;
            this.end_date="";
+           this.selectedUsers = users;
+           this.dependanceTask = dependanceTask;
     }
    
    showTaskModal:boolean;
    showDependanceModal:boolean;
    subTasks:SubTask[];
    end_date:string;
+   selectedUsers:User[];
+   dependanceTask:Task|undefined;
 }
 
  const initialState:AddTaskUiState = {
@@ -20,6 +26,9 @@ export class AddTaskUiState{
      showDependanceModal: false,
      subTasks: [],
      end_date: "",
+     selectedUsers:[] ,
+     dependanceTask:undefined,
+
  };
 
 const addTaskUiSlice = createSlice({
@@ -51,6 +60,13 @@ const addTaskUiSlice = createSlice({
         add(state){
             return {...state, subTasks:[...state.subTasks,new SubTask("   ")]}
         },
+        addUser(state,actions){
+            return {...state, selectedUsers:[...state.selectedUsers,actions.payload]}
+        },
+        unSelectUser(state,actions){
+            return {...state,selectedUsers:state.selectedUsers.filter((user) =>  actions.payload != user.id)} 
+
+        },
         remove(state,actions){
            return {...state,subTasks:state.subTasks.filter((e,i) =>  actions.payload != i)} 
 
@@ -64,6 +80,9 @@ const addTaskUiSlice = createSlice({
               })} 
  
          },
+         setDependanceTask(state,actions){
+            state.dependanceTask = actions.payload;
+         },
          setEndDate(state,actions){
             return {...state,end_date:actions.payload}
          }
@@ -73,7 +92,7 @@ const addTaskUiSlice = createSlice({
     }
 })
 
-export const {  initialize,setEndDate,showDependanceModal,add,showTaskModal,hideDependanceModal,hideTaskModal,remove,change } = addTaskUiSlice.actions;
+export const { setDependanceTask,addUser,unSelectUser ,initialize,setEndDate,showDependanceModal,add,showTaskModal,hideDependanceModal,hideTaskModal,remove,change } = addTaskUiSlice.actions;
 export default addTaskUiSlice.reducer;
 
 

@@ -6,17 +6,21 @@ import {MdOutlinePersonAddAlt} from "react-icons/md"
 import  {BsTrash,BsBarChartSteps} from "react-icons/bs"
 import { SubTask } from '../models/SubTask'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { AddTaskUiState, add, change, hideDependanceModal, hideTaskModal, remove, setEndDate, showDependanceModal, showTaskModal } from '../features/task/addTaskUi'
+import { AddTaskUiState, add, addUser, change, hideDependanceModal, hideTaskModal, remove, setDependanceTask, setEndDate, showDependanceModal, showTaskModal, unSelectUser } from '../features/task/addTaskUi'
 import { Task } from '../models/Task'
 import { key } from 'localforage'
+import { User } from '../models/User'
+import CustomImage from './Image'
+import { randomColor } from '../constantes/constantes'
+import { useFetchDepartementProjectsQuery } from '../features/projects/project'
 
 function AddTask() {
   
   const uiState = useAppSelector((state:{addTaskUi:AddTaskUiState})=>state.addTaskUi)
   const dispatch =useAppDispatch()
-
+  const {data,isFetching} = useFetchDepartementProjectsQuery({});
   const allTasks = [new Task(1,"task1"),new Task(2,"task2","EN RETARD"),new Task(3,"task3","TERMINÉ")]
-  
+  const users:User[] = [new User(1,"mohamed hadj"),new User(2,"meriem sahrane")]  
 
   return (
     <div>
@@ -31,7 +35,7 @@ function AddTask() {
             </div>
             <div className='col-10'>
             <InputGroup >   
-            <FormControl className='border-0' type='text' placeholder='Task name'  /> 
+               <FormControl className='border-0' type='text' placeholder='Task name'  /> 
             </InputGroup>
 
             </div>
@@ -42,20 +46,58 @@ function AddTask() {
             </div>
           </div>
           <div className="d-flex flex-flex-row algin-items-center ">
-           <div className='text-secondary   align-self-center'>
+          <div className='d-flex flex-row alig-items-center'>
+           <div className=' text-secondary   align-self-center'>
             Dans
             </div> 
-            <Form.Select className='align-self-center mx-2'>
+
+            <Form.Select className='align-self-center mx-2' style={{"borderRadius":"15px"}}>
                  <option defaultChecked={true}>Sélectionner votre projet</option>
 
             </Form.Select>
             <span className='text-secondary  mx-2 align-self-center'>
               Pour
             </span> 
-              <Button className='btn-light shadow rounded-circle fs-4 text-secondary border mx-3' title='Assigner'>
+             
+            </div>
+              <OverlayTrigger
+            trigger={"click"}
+            key={"top"}
+            placement={"bottom"}
+            transition={true}
+            overlay={
+            <Popover className={`popover-positioned`} style={{"minWidth":"25vw"}}>
+              <Popover.Body>
+                
+              <InputGroup >
+                <InputGroup.Text className='bg-white '>
+                <FontAwesomeIcon icon={faSearch} />
+                </InputGroup.Text>
+                
+            <FormControl className='border-start-0' type='text' placeholder='Rechercher..' /> 
+            </InputGroup>
+            {
+              users.map((user)=> {
+               const ele =  uiState.selectedUsers.find((u)=> u.id == user.id);
+
+              return   (<UserComponent user={user}  selected={ele!= undefined} key={user.id} /> )
+              
+              })
+              
+            }
+              </Popover.Body>
+            </Popover>
+          }
+        >
+          <Button className='btn-light shadow rounded-circle fs-4 text-secondary border mx-3' title='Assigner'>
               <MdOutlinePersonAddAlt />
               </Button>
-
+        </OverlayTrigger>
+            {
+              uiState.selectedUsers.map((user)=> (<div className='align-self-center' title={user.name} key={user.id}>
+                <CustomImage data={{classes:"rounded-circle",color:"ffffff",background:randomColor(),height:"6vh",label:user.name.split(" ")[0].charAt(0)+user.name.split(" ")[1].charAt(0)}}  />
+              </div>)) 
+            }
 
           </div>
           <div className='mt-2'>
@@ -84,7 +126,7 @@ function AddTask() {
           
             <OverlayTrigger
             trigger={"click"}
-            key={"top"}
+            key={"echeance"}
             placement={"top"}
             transition={true}
             overlay={
@@ -148,9 +190,15 @@ function AddTask() {
           <div className=" my-2 py-3" style={{"maxHeight":"30vh","overflowY":"auto","overflowX":"auto"}}>
               {
                 allTasks.map((task:Task) =>(
-                  <div className= { task.status == "À FAIRE" ? "py-2 px-3 pending_task" : "py-2 px-3 outdated_task"  } >
+                  <div className= { task.status == "À FAIRE" ? "py-2 px-3 pending_task" : "py-2 px-3 outdated_task"  } key={task.id} >
                   <div className="form-check  ">
-                <input className="form-check-input" type="checkbox" value={task.id} key={task.id} />
+                <input className="form-check-input" type="radio" name='dependance' value={task.id} key={task.id} defaultChecked={uiState.dependanceTask?.id == task.id} 
+                onChange={(e)=>{
+                  if(e.target.checked){
+                    dispatch(setDependanceTask(task));
+                  }
+                }}
+                />
                 <label className="form-check-label text-secondary" >
                   {task.title}
                 </label>
@@ -172,6 +220,26 @@ function AddTask() {
     </div>
 
   )
+}
+export function UserComponent({user,selected}:{user:User,selected:boolean}){
+  const dispatch = useAppDispatch();
+return (<div className='d-flex flex-row  align-items-center my-1' onClick={()=>{
+  if(selected == true) dispatch(unSelectUser(user.id));
+  else dispatch(addUser(user));
+}}>
+  <div className='align-self-center col-2' >
+
+  <CustomImage data={{classes:"rounded-circle ",color:"ffffff",background:randomColor(),height:"5vh",label:user.name.split(" ")[0].charAt(0)+user.name.split(" ")[1].charAt(0)}}  />
+  </div>
+  <p className='align-self-center m-2 fs-6 col-6'>{user.name}</p>
+  {
+    selected && (<button className='btn '>
+         <BsTrash color='violet' onClick={()=>{
+
+      }}  />
+    </button>)
+  }
+</div>)
 }
 export function SubTaskComponent(param:{subTask:SubTask,k:number}){
     const dispatch = useAppDispatch();

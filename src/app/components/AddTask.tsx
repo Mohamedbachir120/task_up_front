@@ -6,19 +6,20 @@ import {MdOutlinePersonAddAlt} from "react-icons/md"
 import  {BsTrash,BsBarChartSteps} from "react-icons/bs"
 import { SubTask } from '../models/SubTask'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { AddTaskUiState, add, addUser, change, hideDependanceModal, hideTaskModal, remove, setDependanceTask, setEndDate, showDependanceModal, showTaskModal, unSelectUser } from '../features/task/addTaskUi'
+import { AddTaskUiState, add, addUser, change, hideDependanceModal, hideTaskModal, remove, setDependanceTask, setEndDate, showDependanceModal, showTaskModal, unSelectUser } from '../../features/task/addTaskUi'
 import { Task } from '../models/Task'
-import { key } from 'localforage'
 import { User } from '../models/User'
 import CustomImage from './Image'
 import { randomColor } from '../constantes/constantes'
-import { useFetchDepartementProjectsQuery } from '../features/projects/project'
+import { useFetchDepartementProjectsQuery } from '../../features/projects/project'
+import { Project } from '../models/Project'
 
 function AddTask() {
-  
+  const [keyword,setKeyword] = useState("")
+  const {data,isFetching} = useFetchDepartementProjectsQuery({keyword});
+
   const uiState = useAppSelector((state:{addTaskUi:AddTaskUiState})=>state.addTaskUi)
   const dispatch =useAppDispatch()
-  const {data,isFetching} = useFetchDepartementProjectsQuery({});
   const allTasks = [new Task(1,"task1"),new Task(2,"task2","EN RETARD"),new Task(3,"task3","TERMINÉ")]
   const users:User[] = [new User(1,"mohamed hadj"),new User(2,"meriem sahrane")]  
 
@@ -52,8 +53,13 @@ function AddTask() {
             </div> 
 
             <Form.Select className='align-self-center mx-2' style={{"borderRadius":"15px"}}>
-                 <option defaultChecked={true}>Sélectionner votre projet</option>
+              { isFetching &&  (<option defaultChecked={true}>Sélectionner votre projet</option>) }
+                { 
+                !isFetching && data?.data.map((project:Project)=>{
+                 return  (<option value={project.id} key={project.id}> {project.name}</option>)
+                })
 
+                }
             </Form.Select>
             <span className='text-secondary  mx-2 align-self-center'>
               Pour

@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { baseUrl } from '../../constantes/constantes';
+import { baseUrl } from '../../app/constantes/constantes';
 
 export interface Credential {
     id: number,

@@ -8,8 +8,8 @@ function Home() {
   return (
     <div>
       
-        <SideBar active="home" />
-        <Header />
+        <SideBar active="home" /> 
+         <Header />
         <AddTask  />
     </div>
   )

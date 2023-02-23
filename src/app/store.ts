@@ -1,11 +1,11 @@
-import { configureStore } from "@reduxjs/toolkit";
-import mainUiReducer from "./features/mainUi";
+import { configureStore ,getDefaultMiddleware} from "@reduxjs/toolkit";
+import { apiSlice } from "./../features/auth/login";
+import authReducer from "./../features/auth/auth-slice";
 
-import addTaskUiReducer from "./features/task/addTaskUi";
-
-import authReducer from "./features/auth/auth-slice";
-import { apiSlice } from "./features/auth/login";
-import { projectSlice } from "./features/projects/project";
+import mainUiReducer from "./../features/mainUi";
+import addTaskUiReducer from "./../features/task/addTaskUi";
+import { projectSlice } from "./../features/projects/project";
+import { taskSlice } from "../features/task/task";
 
 export const store = configureStore({
     reducer:{
@@ -13,17 +13,19 @@ export const store = configureStore({
         auth: authReducer,
         addTaskUi:addTaskUiReducer,
         [apiSlice.reducerPath]:apiSlice.reducer,
-        [projectSlice.reducerPath]:projectSlice.reducer
+        [projectSlice.reducerPath]:projectSlice.reducer,
+        [taskSlice.reducerPath]:taskSlice.reducer
 
     },
     
     middleware:(getDefaultMiddleware)=>{
         return getDefaultMiddleware({serializableCheck:false}).concat(
             apiSlice.middleware,
-            projectSlice.middleware
-        )
+            projectSlice.middleware,
+            taskSlice.middleware
+        );
 
     }
-})
+});
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;

@@ -1,5 +1,5 @@
 import { createSlice,PayloadAction } from "@reduxjs/toolkit";
-import {store } from './../../store';
+import {store } from './../../app/store';
 export class AuthState{
     constructor (isAuthenticated:boolean,token:string,username:string,id:number,role:string)  {
         this.isAuthenticated = isAuthenticated;

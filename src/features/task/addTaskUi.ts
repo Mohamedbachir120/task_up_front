@@ -1,7 +1,7 @@
 import { createSlice,PayloadAction } from "@reduxjs/toolkit";
-import { SubTask } from "../../models/SubTask";
-import { User } from "../../models/User";
-import { Task } from "../../models/Task";
+import { SubTask } from "../../app/models/SubTask";
+import { User } from "../../app/models/User";
+import { Task } from "../../app/models/Task";
 
 export class AddTaskUiState{
     constructor (showTaskModal:boolean,showDependanceModal:boolean,subTasks:[],users:[],dependanceTask:Task)  {

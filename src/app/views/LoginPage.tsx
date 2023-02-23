@@ -3,9 +3,9 @@ import { Button ,Form, FormControl, FormLabel, InputGroup, Spinner, ToastContain
 import { BsEnvelope } from 'react-icons/bs'
 import {BiLockAlt} from "react-icons/bi";
 import { useState } from "react";
-import { loginParams, useLoginMutation } from "../features/auth/login";
+import { loginParams, useLoginMutation } from "../../features/auth/login";
 import { useAppDispatch } from "../hooks";
-import { AuthState, setCredentials } from "../features/auth/auth-slice";
+import { AuthState, setCredentials } from "../../features/auth/auth-slice";
 import Loader from "../components/Loader";
 import Toast from 'react-bootstrap/Toast';
 

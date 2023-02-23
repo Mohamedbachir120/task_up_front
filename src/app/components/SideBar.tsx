@@ -10,7 +10,7 @@ import {AiOutlineDown,AiOutlineDoubleLeft} from "react-icons/ai"
 import { IconType } from 'react-icons'
 import { randomColor } from '../constantes/constantes'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { MainUiState, hideMarginLeft, initialize } from '../features/mainUi'
+import { MainUiState, hideMarginLeft, initialize } from '../../features/mainUi'
 
 function SideBar(params:{active:string}) {
   const dispatch = useAppDispatch();

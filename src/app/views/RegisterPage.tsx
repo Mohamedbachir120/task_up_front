@@ -9,9 +9,9 @@ import { Direction, default_direction } from "../models/Direction"
 import { baseUrl } from "../constantes/constantes";
 import { Departement } from "../models/Departement";
 import axios from "axios";
-import { User, useLoginMutation, useRegisterMutation } from "../features/auth/login";
+import { User, useLoginMutation, useRegisterMutation } from "../../features/auth/login";
 import { useAppDispatch } from "../hooks";
-import { AuthState, setCredentials } from "../features/auth/auth-slice";
+import { AuthState, setCredentials } from "../../features/auth/auth-slice";
 import Loader from "../components/Loader";
 
 function RegisterPage() {
@@ -39,7 +39,6 @@ function RegisterPage() {
                 (e:any) => new Departement(e.id,e.name,new Direction(e.direction.id,e.direction.name))))   
            })     
         } catch (error) {
-                console.log(error)
         }
        
     }

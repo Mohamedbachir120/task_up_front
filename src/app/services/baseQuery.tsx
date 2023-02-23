@@ -1,8 +1,8 @@
 import { baseUrl } from '../../app/constantes/constantes';
 import { RootState, store } from '../../app/store';
-import { AuthState, setCredentials, signOut } from './../features/auth/auth-slice';
+import { AuthState, setCredentials, signOut } from './../../features/auth/auth-slice';
 import { BaseQueryApi, BaseQueryFn, FetchArgs, FetchBaseQueryError, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Credential } from '../features/auth/login'; 
+import { Credential } from '../../features/auth/login'; 
 export const baseQuery = fetchBaseQuery({
     baseUrl: baseUrl,
     prepareHeaders: (headers, { getState }) => {

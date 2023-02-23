@@ -1,6 +1,6 @@
 import {  createApi } from '@reduxjs/toolkit/query/react';
-import { baseQueryWithReauth } from '../../services/baseQuery';
-import { Project } from '../../models/Project';
+import { baseQueryWithReauth } from '../../app/services/baseQuery';
+import { Project } from '../../app/models/Project';
 
 
 
@@ -17,7 +17,7 @@ export const projectSlice = createApi({
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
 
-        fetchDepartementProjects: builder.query<ListResponse<Project>,{}>({
+        fetchDepartementProjects: builder.query<ListResponse<Project>,{keyword:string}>({
             query: (params) => {return `/department_projects`;},
 
         }),

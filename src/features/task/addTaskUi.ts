@@ -36,9 +36,13 @@ const addTaskUiSlice = createSlice({
     initialState,
     reducers: {
         initialize (state)  {
-            
-                return initialState
+            alert("hhhhh")
+            state = {...state,showTaskModal:false,showDependanceModal:false,subTasks: [],end_date: "",selectedUsers:[],dependanceTask:undefined};
            
+        },
+        resetToInitial(state){
+            return initialState
+
         },
         
         showTaskModal(state){
@@ -92,7 +96,7 @@ const addTaskUiSlice = createSlice({
     }
 })
 
-export const { setDependanceTask,addUser,unSelectUser ,initialize,setEndDate,showDependanceModal,add,showTaskModal,hideDependanceModal,hideTaskModal,remove,change } = addTaskUiSlice.actions;
+export const { resetToInitial,setDependanceTask,addUser,unSelectUser ,initialize,setEndDate,showDependanceModal,add,showTaskModal,hideDependanceModal,hideTaskModal,remove,change } = addTaskUiSlice.actions;
 export default addTaskUiSlice.reducer;
 
 

@@ -3,6 +3,7 @@ import { baseQueryWithReauth } from '../../app/services/baseQuery';
 import { Project } from '../../app/models/Project';
 import { User } from '../auth/login';
 import { Task } from '../../app/models/Task';
+import { StandarResponse } from '../../app/services/standardResponse';
 
 
 
@@ -25,6 +26,32 @@ export const taskSlice = createApi({
             query: (params) => {return `/fetch_initial_data`;},
 
         }),
+        addTask:builder.mutation<StandarResponse,
+        {   users:number[],
+            title:string,
+            description:string,
+            dependance_id:number|undefined,
+            project_id:number|undefined,
+            sub_tasks:string[],
+            end_date:string,
+        }>({
+            query:(params) => ({
+               url:"task",
+               method: "POST",
+               body:{
+                sub_tasks:params.sub_tasks,
+                dependance_id:params.dependance_id,
+                title:params.title,
+                description:params.description,
+                project_id:params.project_id,
+                end_date:params.end_date,
+                users:params.users,
+                 
+
+               }
+            })
+        })
+
    
       
 
@@ -32,4 +59,4 @@ export const taskSlice = createApi({
 
 })
 export const {
-    useFetchInitialDataQuery } = taskSlice;
+    useFetchInitialDataQuery , useAddTaskMutation} = taskSlice;

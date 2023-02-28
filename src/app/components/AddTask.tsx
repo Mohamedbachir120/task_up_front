@@ -198,9 +198,7 @@ function AddTask() {
             </div>
           <button className='btn main-btn text-light' onClick={async () =>{ 
               
-              if(uiState.selectedUsers.length == 0){
-                dispatch(addUser(new User(authState.id,authState.username)));
-              }
+              
               if(taskInfos.title.trim().length == 0){
                   setErrors({...errors,title:"Le nom d'une tâche doit être remplis"})
               }else if(uiState.end_date == undefined){
@@ -210,7 +208,7 @@ function AddTask() {
                 setScreen("loading");
                 try {
                   const  {success,message}   = await addTask({
-                    users: uiState.selectedUsers.map((user) => user.id),
+                    users: uiState.selectedUsers.length > 0 ?  uiState.selectedUsers.map((user) => user.id) : [authState.id],
                     sub_tasks: uiState.subTasks.map((task) => task.title),
                     title: taskInfos.title,
                     description: taskInfos.description,

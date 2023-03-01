@@ -6,9 +6,8 @@ import {MdOutlinePersonAddAlt} from "react-icons/md"
 import  {BsTrash,BsBarChartSteps} from "react-icons/bs"
 import { SubTask } from '../models/SubTask'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { AddTaskUiState, add, addUser, change, hideDependanceModal, hideTaskModal, remove, resetToInitial, setDependanceTask, setEndDate, showDependanceModal, showTaskModal, testFunc, unSelectUser } from '../../features/task/addTaskUi'
+import { AddTaskUiState, add, addUser, change, hideDependanceModal, hideTaskModal, remove, resetToInitial, setDependanceTask, setEndDate, showDependanceModal, showTaskModal, unSelectUser } from '../../features/task/addTaskUi'
 import { Task } from '../models/Task'
-import { User } from '../models/User'
 import CustomImage from './Image'
 import { randomColor } from '../constantes/constantes'
 import { useFetchDepartementProjectsQuery } from '../../features/projects/project'
@@ -16,7 +15,8 @@ import { Project } from '../models/Project'
 import { useAddTaskMutation, useFetchInitialDataQuery } from '../../features/task/task'
 import { AuthState } from '../../features/auth/auth-slice'
 import Loader from './Loader'
-import { initialize } from '../../features/mainUi'
+import { initialize, triggerRefetch } from '../../features/mainUi'
+import { User } from '../models/User'
 
 function AddTask() {
   const [keyword,setKeyword] = useState("")
@@ -110,9 +110,9 @@ function AddTask() {
                 }}/> 
             </InputGroup>
             {
-              data?.users.filter((user)=>{
+              data?.users.filter((user:User)=>{
                 return user.name.includes(searchUser); 
-              }).map((user)=> {
+              }).map((user:User)=> {
                const ele =  uiState.selectedUsers.find((u:User)=> u.id == user.id);
 
               return   (<UserComponent user={user}  selected={ele!= undefined} key={user.id} /> )
@@ -221,6 +221,7 @@ function AddTask() {
                   
                   setScreen("created");
                   refetch();
+                  dispatch(triggerRefetch( (Math.random() *4).toString() ));
                 } catch (error) {
                   setScreen("error");
                   
@@ -361,7 +362,7 @@ function AddTask() {
 
   )
 }
-export function UserComponent({user,selected}:{user:User,selected:boolean}){
+export function UserComponent(param:{user:User,selected:boolean}){
   const dispatch = useAppDispatch();
   
 return (
@@ -369,18 +370,18 @@ return (
   style={{"cursor":"pointer"}}
   onClick={
   ()  =>  {
-  if(selected == true) dispatch(unSelectUser(user.id));
-  else dispatch(addUser(user));
+  if(param.selected == true) dispatch(unSelectUser(param.user.id));
+  else dispatch(addUser(param.user));
   }
 }
   >
   <div className='align-self-center col-2' >
 
-  <CustomImage data={{classes:"rounded-circle ",color:"ffffff",background:randomColor(user.id),height:"5vh",label:user.name.split(" ")[0].charAt(0)+user.name.split(" ")[1].charAt(0)}}  />
+  <CustomImage data={{classes:"rounded-circle ",color:"ffffff",background:randomColor(param.user.id),height:"5vh",label:param.user.name.split(" ")[0].charAt(0)+param.user.name.split(" ")[1].charAt(0)}}  />
   </div>
-  <p className='align-self-center m-2 fs-6 col-6'>{user.name}</p>
+  <p className='align-self-center m-2 fs-6 col-6'>{param.user.name}</p>
   {
-    selected && (<button className='btn '>
+    param.selected && (<button className='btn '>
          <BsTrash color='violet' onClick={()=>{
 
       }}  />

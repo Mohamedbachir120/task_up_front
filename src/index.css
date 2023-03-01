@@ -3,6 +3,9 @@
   --MAINDARK:#5f48ea;
   --MAINGREY:#888888;
 }
+html,body{
+  min-height: 100vh !important;
+}
 .text-violet{
   color:var(--MAINCOLOR) !important;
 
@@ -145,6 +148,7 @@
   height: -moz-max-content;
   }
 .add_task_modal{
+  z-index: 2;
   width: 45vw;
   position: fixed !important;
   right: 2vw;
@@ -159,4 +163,29 @@
   border: 1px solid rgba(247,77,75,.2) !important;
   border-left: 2px solid #f74d4b !important;
   background: rgba(247,77,75,.05) !important;
+}
+.erase-btn{
+  color: grey !important;
+}
+.erase-btn:hover {
+  background-color: #f74d4b !important;
+  color: white !important;
+}
+.success-btn{
+  color: grey !important;
+}
+.success-btn:hover {
+  background-color: #198754 !important;
+  color: white !important;
+}
+.task-card{
+  cursor: pointer;
+}
+.task-card:hover .hidden_task *{
+  display: block !important;
+}
+
+.hidden_task * {
+  display: none !important;
+  
 }

@@ -1,8 +1,8 @@
 import {  createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithReauth } from '../../app/services/baseQuery';
 import { Project } from '../../app/models/Project';
-import { User } from '../auth/login';
-import { Task } from '../../app/models/Task';
+import { User } from '../../app/models/User';
+import { FullTask, Task } from '../../app/models/Task';
 import { StandarResponse } from '../../app/services/standardResponse';
 
 
@@ -15,7 +15,11 @@ export interface ListResponse<Project> {
     tasks:Task[]
   }
 
-
+export interface TasksResponse {
+    finished:FullTask [],
+    todo:FullTask[],
+    late:FullTask[]
+}
 
 export const taskSlice = createApi({
     reducerPath: 'task',
@@ -26,6 +30,10 @@ export const taskSlice = createApi({
             query: (params) => {return `/fetch_initial_data`;},
 
         }),
+        fetchTasks:builder.query<TasksResponse,{keyword:string}>({
+            query: (params) => {return `/tasks`;}
+        }),
+
         addTask:builder.mutation<StandarResponse,
         {   users:number[],
             title:string,
@@ -50,7 +58,7 @@ export const taskSlice = createApi({
 
                }
             })
-        })
+        }),
 
    
       
@@ -59,4 +67,4 @@ export const taskSlice = createApi({
 
 })
 export const {
-    useFetchInitialDataQuery , useAddTaskMutation} = taskSlice;
+    useFetchInitialDataQuery , useFetchTasksQuery,useAddTaskMutation} = taskSlice;

@@ -9,9 +9,11 @@ import { useAppSelector } from '../hooks';
 import { useFetchTasksQuery } from '../../features/task/task';
 import { MainUiState } from '../../features/mainUi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FullTask } from '../models/Task';
 import CustomImage from '../components/Image';
+import {GrSteps} from 'react-icons/gr';
+
 import { randomColor } from '../constantes/constantes';
 
 const socket = io("http://localhost:3000");
@@ -80,6 +82,7 @@ function TasksComponent(){
 }
 const TaskComponent = (param:{task:FullTask,color:string}) => {
       const {task,color} = param;
+      const [showSubTask,setShowSubTask] = useState("d-none")
      return (
      <div className='task-card card p-2 my-2'>
 
@@ -87,8 +90,34 @@ const TaskComponent = (param:{task:FullTask,color:string}) => {
       <div>
 
     <span className='text-secondary fs-6'> {task.project.name}</span>
-    <p className='text-dark fs-6'> {task.title}</p>
+    <div>
+
+    <span className='text-dark fs-6'> {task.title}</span>
+    </div>
+    <button className='btn sub_task_btn' title='Sous tâches' onClick={()=>{
+      if(showSubTask == ""){
+        setShowSubTask("d-none");
+
+      }else{
+
+        setShowSubTask("");
+      }
+    }}>
+    <GrSteps /> 
+    </button>
+
+      { task.sub_tasks?.length > 0 && (
+    <ul >
+      {
+        task.sub_tasks.map((sub)=> 
+        (<li key={sub.id} className={`${showSubTask}`}> {sub.title}</li>))
+      }
+    </ul>)
+      }
+    <div>
+
     <span className={`${color} fs-6`}> {task.end_date}</span>
+    </div>
   
     </div>
     <div className=''>
@@ -96,14 +125,21 @@ const TaskComponent = (param:{task:FullTask,color:string}) => {
       (<div key={user.id} title={user.name}> <CustomImage  data={{classes:"my-1 rounded-circle",color:"ffffff",background:randomColor(user.id),height:"4.5vh",label:user.name.split(" ")[0].charAt(0)+user.name.split(" ")[1].charAt(0)}} key={user.id}/> </div>))}
     </div>
     </div>
-    <div className=' d-flex flex-row justify-content-end hidden_task' >
-      <button className='btn rounded-circle shadow-sm mx-1 success-btn py-3 ' title='Valider'>
+    <div className="d-flex flex-row hidden_task">
+        <div className='col-8 d-flex flex-row'>
+          <button className='btn btn-light my-2' >
+            <FontAwesomeIcon icon={faAdd} className='m-1' />Ajouter sous tâche
+          </button>
+        </div>
+    <div className=' d-flex flex-row justify-content-end col-4 ' >
+      <button className='btn rounded-circle shadow-sm mx-1 success-btn  ' title='Valider'>
         <FontAwesomeIcon icon={faCheck}  size='xs' />
          </button> 
       <button className='btn rounded-circle shadow-sm mx-1 erase-btn' title="supprimer">
         <FontAwesomeIcon icon={faTrash} size='xs' />
       </button>  
       </div>
+    </div>
     </div>
 );
 

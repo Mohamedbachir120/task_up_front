@@ -167,6 +167,15 @@ html,body{
 }
 .erase-btn{
   color: grey !important;
+  min-height: 5vh;
+  max-height: 5vh;
+  min-width: 5vh;
+  max-width: 5vh;
+
+
+}
+.success-btn *,.erase-btn *{
+  margin: auto;
 }
 .erase-btn:hover {
   background-color: #f74d4b !important;
@@ -174,6 +183,10 @@ html,body{
 }
 .success-btn{
   color: grey !important;
+  min-height: 5vh;
+  max-height: 5vh;
+  min-width: 5vh;
+  max-width: 5vh;
 }
 .success-btn:hover {
   background-color: #198754 !important;
@@ -183,10 +196,11 @@ html,body{
   cursor: pointer;
 }
 .task-card:hover .hidden_task *{
-  display: block !important;
+  display: flex !important;
 }
 
 .hidden_task * {
   display: none !important;
   
 }
+

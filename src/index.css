@@ -3,11 +3,14 @@
   --MAINDARK:#5f48ea;
   --MAINGREY:#888888;
 }
+html,body{
+  min-height: 100vh !important;
+}
 .text-violet{
   color:var(--MAINCOLOR) !important;
 
 }
-*{
+:not(.popover-positioned){
     -webkit-transition: 200ms linear !important;
     -moz-transition: 200ms linear !important;
     -o-transition: 200ms linear !important;
@@ -32,7 +35,7 @@
   font-weight: 500 !important;
   border-radius: 10px !important;
   font-size: 0.93em !important;
-  box-shadow: #7c68ee5e 5px 5px 10px 5px;
+  box-shadow: #7c68ee5e 5px 5px 20px 5px;
 }
 .main-btn:hover{
   background-color: var(--MAINDARK) !important;
@@ -59,6 +62,7 @@
   z-index: 2 ! important;
 }
 .card .main-btn{
+  box-shadow: #7c68ee5e 5px 5px 20px 5px;
   box-shadow: #7c68ee5e 10px 10px 10px 10px;
 
 }
@@ -139,4 +143,50 @@
   right: 2vw;
   bottom: 2vw;
 
+}
+.ft-content{
+  max-height: fit-content;
+  height: -moz-max-content;
+  }
+.add_task_modal{
+  z-index: 2;
+  width: 45vw;
+  position: fixed !important;
+  right: 2vw;
+  bottom: 5vw;
+}
+.pending_task{
+  border: 1px solid rgba(255,204,0,.4) !important;
+  border-left: 2px solid #fc0 !important;
+  background: rgba(255,204,0,.05) !important;
+}
+.outdated_task{
+  border: 1px solid rgba(247,77,75,.2) !important;
+  border-left: 2px solid #f74d4b !important;
+  background: rgba(247,77,75,.05) !important;
+}
+.erase-btn{
+  color: grey !important;
+}
+.erase-btn:hover {
+  background-color: #f74d4b !important;
+  color: white !important;
+}
+.success-btn{
+  color: grey !important;
+}
+.success-btn:hover {
+  background-color: #198754 !important;
+  color: white !important;
+}
+.task-card{
+  cursor: pointer;
+}
+.task-card:hover .hidden_task *{
+  display: block !important;
+}
+
+.hidden_task * {
+  display: none !important;
+  
 }

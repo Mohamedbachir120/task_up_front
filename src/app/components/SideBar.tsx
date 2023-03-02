@@ -10,7 +10,7 @@ import {AiOutlineDown,AiOutlineDoubleLeft} from "react-icons/ai"
 import { IconType } from 'react-icons'
 import { randomColor } from '../constantes/constantes'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { MainUiState, hideMarginLeft, initialize } from '../features/mainUi'
+import { MainUiState, hideMarginLeft, initialize } from '../../features/mainUi'
 
 function SideBar(params:{active:string}) {
   const dispatch = useAppDispatch();
@@ -143,7 +143,7 @@ function ProjectComponent(param:{name:string}){
   return (
   <div className= {"ps-3 side-bar-item py-1 my-1"}>
   <Link  to={"/project/"+param.name}  >
-   <img src={  `https://ui-avatars.com/api/?background=${randomColor()}&color=ffffff&name=${param.name.charAt(0)}`} />  &nbsp; {param.name}
+   <img src={  `https://ui-avatars.com/api/?background=${randomColor(2)}&color=ffffff&name=${param.name.charAt(0)}`} />  &nbsp; {param.name}
   </Link>
 </div>)
 }
@@ -187,7 +187,7 @@ function DocumentComponent(param:{name:string}){
   return (
   <div className= {"ps-3 side-bar-item py-1 my-1"}>
   <Link  to={"/document/"+param.name}  >
-   <img src={  `https://ui-avatars.com/api/?background=${randomColor()}&color=ffffff&name=${param.name.charAt(0)}`} />  &nbsp; {param.name}
+   <img src={  `https://ui-avatars.com/api/?background=${randomColor(1)}&color=ffffff&name=${param.name.charAt(0)}`} />  &nbsp; {param.name}
   </Link>
 </div>)
 }

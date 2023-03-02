@@ -1,5 +1,5 @@
 import { createSlice,PayloadAction } from "@reduxjs/toolkit";
-import {store } from './../../store';
+import {store } from './../../app/store';
 export class AuthState{
     constructor (isAuthenticated:boolean,token:string,username:string,id:number,role:string)  {
         this.isAuthenticated = isAuthenticated;
@@ -45,12 +45,9 @@ const authSlice = createSlice({
             localStorage.removeItem('username');
             localStorage.removeItem('id');
             localStorage.removeItem("role");
-            state.isAuthenticated = false;
-            state.token = "";
-            state.username="";
-            state.id = 0;    
-                        
-            return state;
+         
+            return new AuthState(false,"","",0,"");
+         
         },
         
     }

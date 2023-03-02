@@ -1,6 +1,6 @@
 import {  createApi } from '@reduxjs/toolkit/query/react';
-import { baseQueryWithReauth } from '../../services/baseQuery';
-import { StandarResponse } from '../../services/standardResponse';
+import { baseQueryWithReauth } from '../../app/services/baseQuery';
+import { StandarResponse } from '../../app/services/standardResponse';
 
 
 

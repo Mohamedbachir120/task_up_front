@@ -1,14 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { store } from './app/store'
+import { Provider } from 'react-redux'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+
 import App from './App'
 import './index.css'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import './annimation.css'
 import LoginPage from './app/views/LoginPage'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import RegisterPage from './app/views/RegisterPage'
 import Home from './app/views/Home'
-import { Provider } from 'react-redux'
-import { store } from './app/store'
 import PublicWrapper from './app/hoc/UnProtected'
 import PrivateWrapper from './app/hoc/Protected'
 

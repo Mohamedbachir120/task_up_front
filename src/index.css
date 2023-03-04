@@ -204,3 +204,14 @@ html,body{
   
 }
 
+.active_tab_item{
+  color: var(--MAINCOLOR);
+}
+.tab_item{
+  color:var(--MAINGREY);
+}
+.tab_item:hover{
+  cursor: pointer;
+  color: var(--MAINCOLOR);
+
+}

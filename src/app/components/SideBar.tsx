@@ -19,7 +19,7 @@ function SideBar(params:{active:string}) {
 
   if(uistate.margin_left == "margin_left"){ return   (
    
-    <div className='side-bar shadow bg-white'>
+    <div className='side-bar border-end  bg-white'>
       <div className="d-flex flex-row justify-content-between align-items-center m-2">
       <div className='d-flex flex-row align-items-center'>
 

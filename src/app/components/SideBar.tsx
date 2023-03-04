@@ -1,16 +1,21 @@
 import React, { useState } from 'react'
 import logo from "../../assets/logo.png"
-import { Button } from 'react-bootstrap'
+import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { IconDefinition, faAdd, faArrowDown, faArrowRight, faArrowUp, faGear, faGreaterThan, faHome, faSearch } from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom'
+import { IconDefinition, faAdd, faArrowDown, faArrowRight, faArrowUp, faCalendar, faDownLong, faDownload, faFilePdf, faGear, faGreaterThan, faHome, faParagraph, faRedo, faSearch, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import { Form, Link } from 'react-router-dom'
 import { VscHome,VscBell, VscGraphLine } from "react-icons/vsc";
 import {BsTrophy} from 'react-icons/bs';
 import {AiOutlineDown,AiOutlineDoubleLeft} from "react-icons/ai"
 import { IconType } from 'react-icons'
-import { randomColor } from '../constantes/constantes'
+import { backend_server, randomColor } from '../constantes/constantes'
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { MainUiState, hideMarginLeft, initialize } from '../../features/mainUi'
+import { useAddTaskMutation, useFetchRapportsQuery, useGenerateReportMutation } from '../../features/task/task'
+import Loader from './Loader'
+import { Rapport } from '../models/Document'
+import { useFetchDepartementProjectsQuery, useStoreProjectMutation } from '../../features/projects/project'
+import { Project } from '../models/Project'
 
 function SideBar(params:{active:string}) {
   const dispatch = useAppDispatch();
@@ -105,8 +110,13 @@ function ShowMoreComponent(params:{active:string}){
 }
 function ProjectsComponent(){
   const [showProject,setShowProject] = useState(false)
-  const projects:string[] = ["m1","p2","s3"]
-
+  const [keyword,setKeyword] = useState("");
+  const [name,setName] = useState("")
+  const {data,isFetching} = useFetchDepartementProjectsQuery({keyword:keyword})
+  const [projectModal,showProjectModal] = useState(false);
+  const [storeProject,isLoading] = useStoreProjectMutation()
+  const [screen,setScreen] = useState('intial');
+ 
   return (
   <div className='border-start-0 border-end-0 border mt-3 '>
   <div className='  side-bar-section d-flex flex-row justify-content-between px-2  py-2'
@@ -125,32 +135,120 @@ function ProjectsComponent(){
    {showProject && (<div className='my-2'>
 
   <div className='d-flex flex-row'>
-  <Button className='btn-grey btn  mx-4 w-100 fs-6 text-secondary '>
+  <Button className='btn-grey btn  mx-4 w-100 fs-6 text-secondary ' onClick={()=>{
+    showProjectModal(true)
+  }}>
        <FontAwesomeIcon icon={faAdd} /> Nouveau projet
   </Button>
 
   </div>
-  <div className='ps-3'>
+  <div className='ps-3' style={{"maxHeight":"30vh","overflowY":"auto"}}>
 
-    {projects.length > 0 && projects.map((project) =>(<ProjectComponent name={project} />))}
+    {  data?.data.map((project) =>(<ProjectComponent project={project} />))}
   </div>
   </div>)}
+  <Modal show={projectModal} onHide={()=>{showProjectModal(false)}}>
+        <Modal.Header closeButton >
+          <Modal.Title className='text-violet'>Création d'un nouveau projet </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        {screen == "loading" && <div className=''>
+          <h5 className='text-center'> création en cours veuillez patientez </h5>
+          <div className='d-flex flex-row justify-content-center'>
+          <Loader />
+
+          </div>
+          </div>}
+        {screen == 'intial' && (<div>
+
+          <label> Veuillez choisir un nom </label>
+           <InputGroup className='col-3'>
+          <InputGroup.Text className='bg-white text-secondary'>
+
+          <FontAwesomeIcon icon={faParagraph}  />
+
+          </InputGroup.Text>
+          
+      <FormControl className='border-start-0' type='text' 
+       value={name} 
+      placeholder='Nom du projet' 
+          
+          onChange={ (e) => {
+            setName(e.target.value);
+           
+          }}
+          /> 
+    </InputGroup>
+  
+          </div>)}
+          {screen == 'success' && (<div>
+            <div className='d-flex flex-row justify-content-center'>
+
+              <h1 className='bg-success text-light p-4 rounded-circle'>
+                <FontAwesomeIcon icon={faThumbsUp}  size='2x'/>
+              </h1>
+
+              </div>
+              <h1 className='text-center text-success'> Projets créé avec succès</h1>
+
+            
+            </div>)}
+        </Modal.Body>
+        <Modal.Footer>
+        <Button className='btn-light' onClick={()=>{
+           showProjectModal(false)
+          }}>
+            Annuler
+          </Button>
+          <Button className='main-btn' onClick={async ()=>{
+            if(name.trim().length > 0){
+
+            
+              try {
+                  setScreen("loading");
+                  const  {success,message} = await  storeProject({name:name}).unwrap();
+                  setScreen("success");
+
+                  setTimeout(() => {
+                      setName("")
+                      setScreen("intial");
+                      setKeyword((Math.random() * 100).toString());
+                      showProjectModal(false)
+                  }, 1500);
+                
+            
+     
+             } catch (error) {
+               console.log(error);
+             }}
+
+          }}>
+            Valider
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
 
   
   </div>)
 }
-function ProjectComponent(param:{name:string}){
+function ProjectComponent(param:{project:Project}){
+  const {project} = param; 
   return (
   <div className= {"ps-3 side-bar-item py-1 my-1"}>
-  <Link  to={"/project/"+param.name}  >
-   <img src={  `https://ui-avatars.com/api/?background=${randomColor(2)}&color=ffffff&name=${param.name.charAt(0)}`} />  &nbsp; {param.name}
+  <Link  to={"/project/"+project.id}  >
+   <img src={  `https://ui-avatars.com/api/?background=${randomColor(project.id)}&color=ffffff&name=${project.name.charAt(0)}`} />  &nbsp; {project.name}
   </Link>
 </div>)
 }
 function DocumentsComponent(){
+  const [date,setDate] = useState({date:new Date()})
   const [showDoc,setshowDoc] = useState(false)
-  const documents:string[] = ["m1","p2","s3"]
-
+  const [keyword,setKeyword] = useState('')
+  const [url,setUrl] = useState('');
+  const [generateReport,{isLoading}] = useGenerateReportMutation();
+  const {data,isFetching,refetch} = useFetchRapportsQuery({keyword:keyword});
+  const [documentModal,showDocumentMOdal] = useState(false);
   return (
   <div className='border-start-0 border-end-0 border '>
   <div className='  side-bar-section d-flex flex-row justify-content-between px-2  py-2'
@@ -169,25 +267,103 @@ function DocumentsComponent(){
    {showDoc && (<div className='my-2'>
 
   <div className='d-flex flex-row'>
-  <Button className='btn-grey btn  mx-4 w-100 fs-6 text-secondary '>
+  <Button className='btn-grey btn  mx-4 w-100 fs-6 text-secondary ' onClick={()=>{
+
+  showDocumentMOdal(true)
+    
+  }}>
        <FontAwesomeIcon icon={faAdd} /> Nouveau document
   </Button>
 
   </div>
-  <div className='ps-3'>
+  <div className='ps-3' style={{"maxHeight":"30vh","overflowY":"auto"}}>
 
-    {documents.length > 0 && documents.map((document) =>(<DocumentComponent name={document} />))}
+    { data?.rapports.map((rapport) =>(<DocumentComponent doc={rapport} key={rapport.id} />))}
   </div>
   </div>)}
+  <Modal show={documentModal} onHide={()=>{showDocumentMOdal(false)}}>
+        <Modal.Header closeButton >
+          <Modal.Title className='text-violet'>Génration d'un rapport d'activité </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        {isLoading && <div className=''>
+          <h5 className='text-center'> génération en cours veuillez patientez </h5>
+          <div className='d-flex flex-row justify-content-center'>
+          <Loader />
 
+          </div>
+          </div>}
+        {!isLoading && url == '' && (<div>
+
+          <label> Veuillez choisir une date </label>
+           <InputGroup className='col-3'>
+          <InputGroup.Text className='bg-white text-secondary'>
+
+          <FontAwesomeIcon icon={faCalendar}  />
+
+          </InputGroup.Text>
+          
+      <FormControl className='border-start-0' type='date' placeholder='' 
+          
+          onChange={async (e) => {
+            console.log(e.target.value);
+            try {
+              const {url} = await  generateReport({date:e.target.value}).unwrap();
+              setKeyword(url)
+              setUrl(url);
+
+            } catch (error) {
+              
+            }
+          }}
+          /> 
+    </InputGroup>
+          </div>)}
+          {!isLoading && url != '' && (<div>
+              <h3 className='text-center my-3'>Rapport généré avec succès</h3>
+
+            <div className='d-flex flex-row justify-content-center mt-5 my-4'>
+                <a href={`${backend_server}${url}`} className='btn btn-primary'  target='_blank'>Télécharger &nbsp;
+               <FontAwesomeIcon icon={faDownload} /> </a>
+              <button className='btn' onClick={()=>{
+                setUrl('')
+              }}>
+              Générer à nouveau  &nbsp; <FontAwesomeIcon icon={faRedo} />
+              </button>
+            </div></div>)}
+        </Modal.Body>
+        <Modal.Footer>
+        <Button className='btn-light' onClick={()=>{
+           showDocumentMOdal(false)
+          }}>
+            Annuler
+          </Button>
+          <Button className='main-btn' onClick={async ()=>{
+              try {
+    
+                showDocumentMOdal(false)
+                
+            
+     
+             } catch (error) {
+               console.log(error);
+             }
+
+          }}>
+            Valider
+          </Button>
+        </Modal.Footer>
+      </Modal>
   
   </div>)
 }
-function DocumentComponent(param:{name:string}){
+function DocumentComponent(param:{doc:Rapport}){
+  const {doc} = param;
+  const IMG = doc.name.split(' ')[1].charAt(0)
   return (
   <div className= {"ps-3 side-bar-item py-1 my-1"}>
-  <Link  to={"/document/"+param.name}  >
-   <img src={  `https://ui-avatars.com/api/?background=${randomColor(1)}&color=ffffff&name=${param.name.charAt(0)}`} />  &nbsp; {param.name}
+  <Link  to={backend_server+doc.url} target='_blank' >
+   <img src={  `https://ui-avatars.com/api/?background=${randomColor(doc.id)}&color=ffffff&name=${IMG}`} />  &nbsp; {doc.name}
   </Link>
 </div>)
 }

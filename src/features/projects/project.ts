@@ -1,6 +1,7 @@
 import {  createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithReauth } from '../../app/services/baseQuery';
 import { Project } from '../../app/models/Project';
+import { StandarResponse } from '../../app/services/standardResponse';
 
 
 
@@ -21,6 +22,15 @@ export const projectSlice = createApi({
             query: (params) => {return `/department_projects`;},
 
         }),
+        storeProject:builder.mutation<StandarResponse,{name:string}>({
+            query: (params) => ({
+                url:"/project",
+                method:"POST",
+                body:{
+                    name:params.name,
+                }
+            })
+        })
    
       
 
@@ -28,4 +38,4 @@ export const projectSlice = createApi({
 
 })
 export const {
-    useFetchDepartementProjectsQuery } = projectSlice;
+    useFetchDepartementProjectsQuery, useStoreProjectMutation } = projectSlice;

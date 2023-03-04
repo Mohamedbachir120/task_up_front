@@ -14,12 +14,12 @@ import { FullTask } from '../models/Task';
 import CustomImage from '../components/Image';
 import {GrSteps} from 'react-icons/gr';
 
-import { randomColor } from '../constantes/constantes';
+import { backend_server, randomColor } from '../constantes/constantes';
 import { Form } from 'react-router-dom';
 import TaskSkeleton from '../components/skeletons/TasksSkeletons';
 import { faLessThan } from '@fortawesome/free-solid-svg-icons';
 
-const socket = io("http://localhost:3000");
+// const socket = io("http://localhost:3000");
 
 function Home() {
   
@@ -175,6 +175,7 @@ function ListComponent(){
 
 function TableauComponent(){
   const keyword = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi.refetchKeyword);
+  // const fetchFile = useFetchReportQuery({date:keyword});
 
   const {data,isFetching,refetch} = useFetchTasksQuery({keyword});
 
@@ -182,7 +183,8 @@ function TableauComponent(){
   
   return (
    <div>
-     {!isFetching && ( <div className={`d-flex flex-row  p-4 `}>
+    
+     { !isFetching && ( <div className={`d-flex flex-row  p-4 `}>
      <div className='col-3 mx-3'>
         <div className="card rounded bg-white mb-4">
           <LineComponent  color={"bg-secondary"} />

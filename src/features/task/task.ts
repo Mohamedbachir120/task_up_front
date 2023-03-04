@@ -4,6 +4,7 @@ import { Project } from '../../app/models/Project';
 import { User } from '../../app/models/User';
 import { FullTask, Task } from '../../app/models/Task';
 import { StandarResponse } from '../../app/services/standardResponse';
+import { Rapport } from '../../app/models/Document';
 
 
 
@@ -26,6 +27,12 @@ export interface DayTaskResponse{
 export interface TaskDateResponse {
     date:string
 }
+export interface FileResponse {
+    url:string
+}
+export interface ListRapport {
+    rapports : Rapport[]
+}
 export const taskSlice = createApi({
     reducerPath: 'task',
     baseQuery: baseQueryWithReauth,
@@ -43,6 +50,20 @@ export const taskSlice = createApi({
         }),
         fetchDateTask:builder.query<TaskDateResponse,{keyword:string}>({
             query: (params) => {return `/get_task_date?keyword=${params.keyword}`;}
+        }),
+        generateReport:builder.mutation<FileResponse,{date:string}>({
+            query:(params) => ({
+
+                url:`/generate_report`,
+                method:'POST',
+                body : {
+                    date:params.date
+                }
+            })
+        }),
+
+        fetchRapports: builder.query<ListRapport,{keyword:string}>({
+            query:(params) => {return `/rapports`}
         }),
         assignSubTask:builder.mutation<StandarResponse,{title:string,id:number}>({
             query:(params) => ({
@@ -99,4 +120,4 @@ export const taskSlice = createApi({
 
 })
 export const {
-    useFetchInitialDataQuery ,useFetchDateTaskQuery,useFetchDayTasksQuery, useMarkAsFinishedMutation,useDeleteMutation,useAssignSubTaskMutation,useFetchTasksQuery,useAddTaskMutation} = taskSlice;
+    useFetchInitialDataQuery , useFetchRapportsQuery,useGenerateReportMutation,useFetchDateTaskQuery,useFetchDayTasksQuery, useMarkAsFinishedMutation,useDeleteMutation,useAssignSubTaskMutation,useFetchTasksQuery,useAddTaskMutation} = taskSlice;

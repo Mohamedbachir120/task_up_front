@@ -24,7 +24,7 @@ function LoginPage() {
     const [message,setMessage] = useState<String>("Veuillez remplir tous les champs")
 
   return (
-    <div className='main-login'>
+    <div className='main-login' >
 
     <div className=' mx-3 my-3 d-flex flex-row justify-content-between header algin-items-center'>
         <div className='d-flex flex-row align-items-center justify-content-start'>

@@ -168,7 +168,7 @@ function CalendrierComponent(){
 }
 function ListComponent(){
   return (<div>
-    <h1>Liste  component</h1>
+    {/* <h1>Liste  component</h1> */}
 </div>)
 }
 
@@ -190,7 +190,7 @@ function TableauComponent(){
           <LineComponent  color={"bg-secondary"} />
           <p className='m-1 text-secondary p-2'> À FAIRE  <span className='rounded-circle card d-inline px-1 mx-1'> {data?.todo.length } </span> </p>
         </div>
-        <div className='rounded' style={{"maxHeight":"70vh","overflowY":"auto"}}>
+        <div className='rounded' style={{"maxHeight":"63vh","overflowY":"auto"}}>
           {!isFetching  && data?.todo.map((todo) =>(<TaskComponent  key={todo.id} task={todo} color='text-warning' />))}
         </div>
      </div>

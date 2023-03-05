@@ -24,6 +24,7 @@ function AddTask() {
   const [taskInfos,setTaskInfos] = useState<{title:string,description:string,selectedProject:number|undefined}>({title:"",description:"",selectedProject:0})
   const [searchUser,setSearchUser] = useState("")
   const [searchTask,setSearchTask] = useState("")
+  const [priority,setPriority] = useState(4)
 
   const [errors,setErrors] = useState({title:"Le nom d'une tâche doit être remplis",echeance:"Vous devez spécifier une échéance à votre tâche"});
 
@@ -94,6 +95,7 @@ function AddTask() {
             key={"top"}
             placement={"bottom"}
             transition={true}
+            rootClose
             overlay={
             <Popover className={`popover-positioned`} style={{"minWidth":"25vw"}}>
               <Popover.Body>
@@ -135,9 +137,18 @@ function AddTask() {
             }
 
           </div>
+          <div>
+            <label htmlFor="" className='my-1'>Définir la priorité de la tâche :</label>
+            <div>
+
+          1  <input type='range' min={1} max={4} className='my-1' defaultValue={4} onChange={(e)=>{
+              setPriority(parseInt(e.target.value));
+          }} /> 4
+            </div>
+          </div>
           <div className='mt-2'>
 
-            <textarea className='form-control'  placeholder='Descripion (Facultatif)' rows={6} onChange={(e)=>{
+            <textarea className='form-control'  placeholder='Descripion (Facultatif)' rows={4} onChange={(e)=>{
                 setTaskInfos({...taskInfos,description:e.target.value});
                 console.log()
             }}></textarea>
@@ -145,7 +156,7 @@ function AddTask() {
           <p className='btn search text-start text-dark' onClick={()=>{
               dispatch(add());
           }}><FontAwesomeIcon icon={faPlus} /> Ajouter une sous-tâche </p>
-          {uiState.subTasks.length > 0  && (<p>Sous-tâches</p>)}
+          {uiState.subTasks.length > 0  && (<div>Sous-tâches</div>)}
           <div style={{"maxHeight":"10vh","overflowY":"auto","overflowX":"hidden"}}> 
 
           {
@@ -153,7 +164,7 @@ function AddTask() {
           }
 
           </div>
-          <div className='d-flex flex-row justify-content-between my-3'>
+          <div className='d-flex flex-row justify-content-between my-2'>
             <div className="d-flex flex-row">
 
             <button className='btn btn-light text-secondary fs-5 rounded-circle shadow border mx-2' onClick={()=>{
@@ -167,6 +178,7 @@ function AddTask() {
             key={"echeance"}
             placement={"top"}
             transition={true}
+            rootClose
             overlay={
             <Popover className={`popover-positioned`} style={{"minWidth":"25vw"}}>
               <Popover.Header as="h3">Échéance</Popover.Header>
@@ -212,6 +224,7 @@ function AddTask() {
                     sub_tasks: uiState.subTasks.map((task) => task.title),
                     title: taskInfos.title,
                     description: taskInfos.description,
+                    priority:priority,
                     dependance_id: uiState.dependanceTask?.id,
                     project_id:  taskInfos.selectedProject == 0 ? data?.projects[0].id : taskInfos.selectedProject,
                     end_date: uiState.end_date

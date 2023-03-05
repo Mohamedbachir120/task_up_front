@@ -1,22 +1,25 @@
 import { createSlice,PayloadAction } from "@reduxjs/toolkit";
 
 export class MainUiState{
-    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string)  {
+    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string,refetchKeywordDoc:string)  {
            this.margin_left = margin_left
            this.refetchKeyword = refetchKeyword
            this.mainActiveTab = mainActiveTab
+           this.refetchKeywordDoc = refetchKeywordDoc
     }
    
    margin_left:string;
    refetchKeyword:string; 
    mainActiveTab:string;
+   refetchKeywordDoc:string;
 
 }
 
  const initialState:MainUiState = {
     margin_left:"margin_left",
     refetchKeyword:"",
-    mainActiveTab:"tableau"
+    mainActiveTab:"tableau",
+    refetchKeywordDoc:""
 
     
 
@@ -43,14 +46,18 @@ const mainUiSlice = createSlice({
         },
         setMainActiveTab(state,actions){
             state.mainActiveTab = actions.payload;
-        }
+        },
+        triggerRefetchKeywordDoc(state,actions){
+            state.refetchKeywordDoc = actions.payload;
+        },
+
      
         
         
     }
 })
 
-export const {  initialize,hideMarginLeft,triggerRefetch , setMainActiveTab  } = mainUiSlice.actions;
+export const {  initialize,hideMarginLeft,triggerRefetch , setMainActiveTab , triggerRefetchKeywordDoc } = mainUiSlice.actions;
 export default mainUiSlice.reducer;
 
 

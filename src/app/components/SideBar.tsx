@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import logo from "../../assets/logo.png"
 import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { IconDefinition, faAdd, faArrowDown, faArrowRight, faArrowUp, faCalendar, faDownLong, faDownload, faFilePdf, faGear, faGreaterThan, faHome, faParagraph, faRedo, faSearch, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import { IconDefinition, faAdd, faArrowDown, faArrowRight, faArrowUp, faCalendar, faDownLong, faDownload, faFilePdf, faGear, faGreaterThan, faHome, faParagraph, faRedo, faSearch, faThumbsUp, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Form, Link } from 'react-router-dom'
 import { VscHome,VscBell, VscGraphLine } from "react-icons/vsc";
 import {BsTrophy} from 'react-icons/bs';
@@ -10,12 +10,13 @@ import {AiOutlineDown,AiOutlineDoubleLeft} from "react-icons/ai"
 import { IconType } from 'react-icons'
 import { backend_server, randomColor } from '../constantes/constantes'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { MainUiState, hideMarginLeft, initialize } from '../../features/mainUi'
+import { MainUiState, hideMarginLeft, initialize, triggerRefetchKeywordDoc } from '../../features/mainUi'
 import { useAddTaskMutation, useFetchRapportsQuery, useGenerateReportMutation } from '../../features/task/task'
 import Loader from './Loader'
 import { Rapport } from '../models/Document'
 import { useFetchDepartementProjectsQuery, useStoreProjectMutation } from '../../features/projects/project'
 import { Project } from '../models/Project'
+import { useDeleteDocumentMutation } from '../../features/task/document'
 
 function SideBar(params:{active:string}) {
   const dispatch = useAppDispatch();
@@ -144,7 +145,7 @@ function ProjectsComponent(){
   </div>
   <div className='ps-3' style={{"maxHeight":"30vh","overflowY":"auto"}}>
 
-    {  data?.data.map((project) =>(<ProjectComponent project={project} />))}
+    {  data?.data.map((project) =>(<ProjectComponent project={project} key={project.id} />))}
   </div>
   </div>)}
   <Modal show={projectModal} onHide={()=>{showProjectModal(false)}}>
@@ -244,11 +245,12 @@ function ProjectComponent(param:{project:Project}){
 function DocumentsComponent(){
   const [date,setDate] = useState({date:new Date()})
   const [showDoc,setshowDoc] = useState(false)
-  const [keyword,setKeyword] = useState('')
   const [url,setUrl] = useState('');
+  const keyword = useAppSelector((state:{mainUi:MainUiState})=> state.mainUi.refetchKeywordDoc)
   const [generateReport,{isLoading}] = useGenerateReportMutation();
   const {data,isFetching,refetch} = useFetchRapportsQuery({keyword:keyword});
   const [documentModal,showDocumentMOdal] = useState(false);
+  const dispatch = useAppDispatch()
   return (
   <div className='border-start-0 border-end-0 border '>
   <div className='  side-bar-section d-flex flex-row justify-content-between px-2  py-2'
@@ -309,7 +311,7 @@ function DocumentsComponent(){
             console.log(e.target.value);
             try {
               const {url} = await  generateReport({date:e.target.value}).unwrap();
-              setKeyword(url)
+              dispatch(triggerRefetchKeywordDoc((url)))
               setUrl(url);
 
             } catch (error) {
@@ -360,11 +362,30 @@ function DocumentsComponent(){
 function DocumentComponent(param:{doc:Rapport}){
   const {doc} = param;
   const IMG = doc.name.split(' ')[1].charAt(0)
+  const [deleteDocument,{isLoading}] = useDeleteDocumentMutation()
+  const dispatch = useAppDispatch()
+
   return (
-  <div className= {"ps-3 side-bar-item py-1 my-1"}>
+    <div className='d-flex flex-row '>
+
+  <div className= {"ps-3 side-bar-item py-1 my-1 align-self-center"}>
   <Link  to={backend_server+doc.url} target='_blank' >
    <img src={  `https://ui-avatars.com/api/?background=${randomColor(doc.id)}&color=ffffff&name=${IMG}`} />  &nbsp; {doc.name}
   </Link>
+    </div>
+    <div className='align-self-center' onClick={async ()=>{
+      try {
+        const {success,message} = await deleteDocument({id:doc.id}).unwrap();
+        dispatch(triggerRefetchKeywordDoc((Math.random() * 100).toString()))
+
+      } catch (error) {
+        
+      }
+    }}>
+      <button className='btn text-danger'>
+        <FontAwesomeIcon icon={faTrash} />
+      </button>
+    </div>
 </div>)
 }
 export default SideBar

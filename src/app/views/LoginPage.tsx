@@ -56,7 +56,7 @@ function LoginPage() {
         </Toast>
     </ToastContainer>
 
-    <div className='d-flex flex-row justify-content-center mt-5 py-4'>
+    <div className='d-flex flex-row justify-content-center mt-3 py-4'>
 
     <div className="rounded card shadow py-4 px-5 ">
         <h2 className='text-center px-5 '>Bienvenue à nouveau !</h2>

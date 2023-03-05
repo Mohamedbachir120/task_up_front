@@ -6,6 +6,7 @@ import mainUiReducer from "./../features/mainUi";
 import addTaskUiReducer from "./../features/task/addTaskUi";
 import { projectSlice } from "./../features/projects/project";
 import { taskSlice } from "../features/task/task";
+import { documentSlice } from "../features/task/document";
 
 export const store = configureStore({
     reducer:{
@@ -14,7 +15,8 @@ export const store = configureStore({
         addTaskUi:addTaskUiReducer,
         [apiSlice.reducerPath]:apiSlice.reducer,
         [projectSlice.reducerPath]:projectSlice.reducer,
-        [taskSlice.reducerPath]:taskSlice.reducer
+        [taskSlice.reducerPath]:taskSlice.reducer,
+        [documentSlice.reducerPath]:documentSlice.reducer
 
     },
     
@@ -22,7 +24,8 @@ export const store = configureStore({
         return getDefaultMiddleware({serializableCheck:false}).concat(
             apiSlice.middleware,
             projectSlice.middleware,
-            taskSlice.middleware
+            taskSlice.middleware,
+            documentSlice.middleware
         );
 
     }

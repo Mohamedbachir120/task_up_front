@@ -83,14 +83,16 @@ export const taskSlice = createApi({
         }),
         delete:builder.mutation<StandarResponse,{id:number}>({
             query:(params) => ({
-                url:`/delete/${params.id}`,
+                url:`/task/${params.id}`,
                 method: 'DELETE',
                
             })
         }),
+        
         addTask:builder.mutation<StandarResponse,
         {   users:number[],
             title:string,
+            priority:number,
             description:string,
             dependance_id:number|undefined,
             project_id:number|undefined,
@@ -105,6 +107,7 @@ export const taskSlice = createApi({
                 title:params.title,
                 description:params.description,
                 project_id:params.project_id,
+                priority:params.priority,
                 end_date:params.end_date,
                 users:params.users,
                  

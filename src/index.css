@@ -3,9 +3,9 @@
   --MAINDARK:#5f48ea;
   --MAINGREY:#888888;
 }
-html,body{
+/* html,body{
   min-height: 100vh !important;
-}
+} */
 .text-violet{
   color:var(--MAINCOLOR) !important;
 

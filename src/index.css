@@ -79,6 +79,7 @@
   max-height: 100vh;
   min-height: 100vh;
   min-width: 20vw;
+  max-width: 20vw;
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; 

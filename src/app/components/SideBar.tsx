@@ -11,10 +11,10 @@ import { IconType } from 'react-icons'
 import { backend_server, randomColor } from '../constantes/constantes'
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { MainUiState, hideMarginLeft, initialize, triggerRefetchKeywordDoc } from '../../features/mainUi'
-import { useAddTaskMutation, useFetchRapportsQuery, useGenerateReportMutation } from '../../features/task/task'
+import { useAddTaskMutation, useFetchRapportsMutation, useGenerateReportMutation } from '../../features/task/task'
 import Loader from './Loader'
 import { Rapport } from '../models/Document'
-import { useFetchDepartementProjectsQuery, useStoreProjectMutation } from '../../features/projects/project'
+import { useFetchDepartementProjectsMutation, useStoreProjectMutation } from '../../features/projects/project'
 import { Project } from '../models/Project'
 import { useDeleteDocumentMutation } from '../../features/task/document'
 
@@ -113,7 +113,8 @@ function ProjectsComponent(){
   const [showProject,setShowProject] = useState(false)
   const [keyword,setKeyword] = useState("");
   const [name,setName] = useState("")
-  const {data,isFetching} = useFetchDepartementProjectsQuery({keyword:keyword})
+  const [projects,setProjects] = useState<Project[]>([])
+  const [getDepartementProject] = useFetchDepartementProjectsMutation()
   const [projectModal,showProjectModal] = useState(false);
   const [storeProject,isLoading] = useStoreProjectMutation()
   const [screen,setScreen] = useState('intial');
@@ -121,8 +122,14 @@ function ProjectsComponent(){
   return (
   <div className='border-start-0 border-end-0 border mt-3 '>
   <div className='  side-bar-section d-flex flex-row justify-content-between px-2  py-2'
-  onClick={(e)=>{
+  onClick={async (e)=>{
     setShowProject(!showProject);
+    try {
+       const {data} = await getDepartementProject({keyword:""}).unwrap();
+       setProjects(data); 
+    } catch (error) {
+      
+    }
   }}>
       <span>PROJETS</span>
       <span>
@@ -145,7 +152,7 @@ function ProjectsComponent(){
   </div>
   <div className='ps-3' style={{"maxHeight":"30vh","overflowY":"auto"}}>
 
-    {  data?.data.map((project) =>(<ProjectComponent project={project} key={project.id} />))}
+    {  projects.map((project) =>(<ProjectComponent project={project} key={project.id} />))}
   </div>
   </div>)}
   <Modal show={projectModal} onHide={()=>{showProjectModal(false)}}>
@@ -208,7 +215,10 @@ function ProjectsComponent(){
               try {
                   setScreen("loading");
                   const  {success,message} = await  storeProject({name:name}).unwrap();
+                  const {data} = await getDepartementProject({keyword:""}).unwrap();
+                  setProjects(data); 
                   setScreen("success");
+
 
                   setTimeout(() => {
                       setName("")
@@ -248,14 +258,22 @@ function DocumentsComponent(){
   const [url,setUrl] = useState('');
   const keyword = useAppSelector((state:{mainUi:MainUiState})=> state.mainUi.refetchKeywordDoc)
   const [generateReport,{isLoading}] = useGenerateReportMutation();
-  const {data,isFetching,refetch} = useFetchRapportsQuery({keyword:keyword});
   const [documentModal,showDocumentMOdal] = useState(false);
   const dispatch = useAppDispatch()
+  const [fetchRapport] = useFetchRapportsMutation();
+  const [rapports,setRapports] = useState<Rapport[]>([])
   return (
   <div className='border-start-0 border-end-0 border '>
   <div className='  side-bar-section d-flex flex-row justify-content-between px-2  py-2'
-  onClick={(e)=>{
+  onClick={async (e)=>{
     setshowDoc(!showDoc);
+    try {
+      const {rapports} = await fetchRapport({keyword:""}).unwrap();
+      setRapports(rapports);  
+    } catch (error) {
+      
+    }
+
   }}>
       <span>DOCUMENTS</span>
       <span>
@@ -280,7 +298,7 @@ function DocumentsComponent(){
   </div>
   <div className='ps-3' style={{"maxHeight":"30vh","overflowY":"auto"}}>
 
-    { data?.rapports.map((rapport) =>(<DocumentComponent doc={rapport} key={rapport.id} />))}
+    { rapports.map((rapport) =>(<DocumentComponent doc={rapport} key={rapport.id} />))}
   </div>
   </div>)}
   <Modal show={documentModal} onHide={()=>{showDocumentMOdal(false)}}>
@@ -311,6 +329,8 @@ function DocumentsComponent(){
             console.log(e.target.value);
             try {
               const {url} = await  generateReport({date:e.target.value}).unwrap();
+              const {rapports} = await fetchRapport({keyword:""}).unwrap();
+              setRapports(rapports);  
               dispatch(triggerRefetchKeywordDoc((url)))
               setUrl(url);
 

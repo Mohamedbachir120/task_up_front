@@ -10,7 +10,6 @@ import { AddTaskUiState, add, addUser, change, hideDependanceModal, hideTaskModa
 import { Task } from '../models/Task'
 import CustomImage from './Image'
 import { randomColor } from '../constantes/constantes'
-import { useFetchDepartementProjectsQuery } from '../../features/projects/project'
 import { Project } from '../models/Project'
 import { useAddTaskMutation, useFetchInitialDataQuery } from '../../features/task/task'
 import { AuthState } from '../../features/auth/auth-slice'

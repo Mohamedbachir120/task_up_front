@@ -6,10 +6,10 @@ import io from 'socket.io-client';
 import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap';
 import { AuthState } from '../../features/auth/auth-slice';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { useAddTaskMutation, useAssignSubTaskMutation, useDeleteMutation, useFetchDateTaskQuery, useFetchDayTasksQuery, useFetchTasksQuery, useMarkAsFinishedMutation } from '../../features/task/task';
+import { useAddTaskMutation, useAssignSubTaskMutation, useDeleteMutation, useFetchDateTaskQuery, useFetchDayTasksQuery, useFetchTasksQuery, useGetSubTasksMutation, useMarkAsFinishedMutation } from '../../features/task/task';
 import { MainUiState, setMainActiveTab, triggerRefetch } from '../../features/mainUi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAdd, faArrowLeft, faCalendar, faCheck, faGreaterThan, faInfoCircle, faList, faSearch, faTable, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faArrowLeft, faCalendar, faCheck, faFlag, faGreaterThan, faInfoCircle, faList, faSearch, faTable, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FullTask } from '../models/Task';
 import CustomImage from '../components/Image';
 import {GrSteps} from 'react-icons/gr';
@@ -18,6 +18,7 @@ import { backend_server, randomColor } from '../constantes/constantes';
 import { Form } from 'react-router-dom';
 import TaskSkeleton from '../components/skeletons/TasksSkeletons';
 import { faLessThan } from '@fortawesome/free-solid-svg-icons';
+import { SubTask } from '../models/SubTask';
 
 // const socket = io("http://localhost:3000");
 
@@ -175,7 +176,6 @@ function ListComponent(){
 
 function TableauComponent(){
   const keyword = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi.refetchKeyword);
-  // const fetchFile = useFetchReportQuery({date:keyword});
 
   const {data,isFetching,refetch} = useFetchTasksQuery({keyword});
 
@@ -234,9 +234,9 @@ const TaskComponent = (param:{task:FullTask,color:string}) => {
       const [assignSubTask,{isLoading}] = useAssignSubTaskMutation();
       const [deleteTask] = useDeleteMutation();
       const [markAsFinished] = useMarkAsFinishedMutation();
-
+      const [sub_tasks,setSubTask] = useState<SubTask[]>([])
       const [deleteModal,showDeleteModal] = useState(false);
-
+      const [getSubtasks] = useGetSubTasksMutation()
       function displaySuccess(){
       setSuccessState({...successState,state:true});
         setTimeout(() => {
@@ -262,16 +262,32 @@ const TaskComponent = (param:{task:FullTask,color:string}) => {
      <div className=' d-flex flex-row align-items-center justify-content-between mx-2'>
       <div>
 
-    <span className='text-secondary fs-6'> {task.project.name}</span>
+    <span className='text-secondary fs-6'>
+       {task.project.name}</span>
     <div>
 
+      <FontAwesomeIcon icon={faFlag}  className={
+         task.priority == 1 ? "text-danger" : 
+         task.priority == 2 ? "text-warning" :
+         task.priority == 3 ? "text-dark" :
+         "text-info"}  title='priorité' /> &nbsp;
     <span className='text-dark fs-6'> {task.title}</span>
     </div>
-    <button className='btn sub_task_btn ' title='Sous tâches' onClick={()=>{
+    <button className='btn sub_task_btn ' title='Sous tâches' onClick={ async ()=>{
       if(showSubTask == ""){
         setShowSubTask("d-none");
 
+
       }else{
+        try {
+          if(sub_tasks.length == 0){
+
+            const {subTasks} = await getSubtasks({id:task.id}).unwrap();
+            setSubTask(subTasks);
+          }
+        } catch (error) {
+          
+        }
 
         setShowSubTask("");
       }
@@ -279,10 +295,10 @@ const TaskComponent = (param:{task:FullTask,color:string}) => {
     <GrSteps  title='sous-tâches' /> 
     </button>
 
-      { task.sub_tasks?.length > 0 && (
+      { sub_tasks?.length > 0 && (
     <ul >
       {
-        task.sub_tasks.map((sub)=> 
+        sub_tasks.map((sub)=> 
         (<li key={sub.id} className={`${showSubTask}`}> {sub.title}</li>))
       }
     </ul>)

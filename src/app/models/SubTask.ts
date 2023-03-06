@@ -1,9 +1,11 @@
 export class SubTask{
-    constructor(title:string,status="À FAIRE"){
+    constructor(id=0,title:string,status="À FAIRE"){
+        this.id = id;
         this.title = title;
-        this.status = status;        
-    }
+        this.status = status;    
 
+    }
+    id:number;
     title:string;
     status:string;
 

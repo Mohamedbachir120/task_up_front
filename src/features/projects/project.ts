@@ -18,8 +18,10 @@ export const projectSlice = createApi({
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
 
-        fetchDepartementProjects: builder.query<ListResponse<Project>,{keyword:string}>({
-            query: (params) => {return `/department_projects`;},
+        fetchDepartementProjects: builder.mutation<ListResponse<Project>,{keyword:string}>({
+            query: (params) => ({
+                url:`/department_projects`,
+            method: 'GET'}),
 
         }),
         storeProject:builder.mutation<StandarResponse,{name:string}>({
@@ -38,4 +40,4 @@ export const projectSlice = createApi({
 
 })
 export const {
-    useFetchDepartementProjectsQuery, useStoreProjectMutation } = projectSlice;
+    useFetchDepartementProjectsMutation, useStoreProjectMutation } = projectSlice;

@@ -1,12 +1,12 @@
 import { configureStore ,getDefaultMiddleware} from "@reduxjs/toolkit";
 import { apiSlice } from "./../features/auth/login";
 import authReducer from "./../features/auth/auth-slice";
-
 import mainUiReducer from "./../features/mainUi";
 import addTaskUiReducer from "./../features/task/addTaskUi";
 import { projectSlice } from "./../features/projects/project";
 import { taskSlice } from "../features/task/task";
 import { documentSlice } from "../features/task/document";
+import { alertSlice } from "../features/alerts/alert";
 
 export const store = configureStore({
     reducer:{
@@ -16,7 +16,8 @@ export const store = configureStore({
         [apiSlice.reducerPath]:apiSlice.reducer,
         [projectSlice.reducerPath]:projectSlice.reducer,
         [taskSlice.reducerPath]:taskSlice.reducer,
-        [documentSlice.reducerPath]:documentSlice.reducer
+        [documentSlice.reducerPath]:documentSlice.reducer,
+        [alertSlice.reducerPath]:alertSlice.reducer
 
     },
     
@@ -25,7 +26,8 @@ export const store = configureStore({
             apiSlice.middleware,
             projectSlice.middleware,
             taskSlice.middleware,
-            documentSlice.middleware
+            documentSlice.middleware,
+            alertSlice.middleware
         );
 
     }

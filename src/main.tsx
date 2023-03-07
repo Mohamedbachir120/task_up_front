@@ -14,6 +14,8 @@ import Home from './app/views/Home'
 import PublicWrapper from './app/hoc/UnProtected'
 import PrivateWrapper from './app/hoc/Protected'
 import AlertPage from './app/views/AlertPage'
+import { Objectif } from './app/models/Objectif'
+import ObjectifPage from './app/views/Objectif'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -47,7 +49,12 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         }>
 
         </Route>
-
+        <Route path='/objectifs' element={
+          <PrivateWrapper>
+            <ObjectifPage />
+          </PrivateWrapper>
+        }>
+        </Route>
         <Route path='/notifications' element={
           <PrivateWrapper>
 

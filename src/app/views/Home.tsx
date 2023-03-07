@@ -7,18 +7,20 @@ import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap';
 import { AuthState } from '../../features/auth/auth-slice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useAddTaskMutation, useAssignSubTaskMutation, useDeleteMutation, useFetchDateTaskQuery, useFetchDayTasksQuery, useFetchTasksQuery, useGetSubTasksMutation, useMarkAsFinishedMutation } from '../../features/task/task';
-import { MainUiState, setMainActiveTab, triggerRefetch } from '../../features/mainUi';
+import { MainUiState, setMainActiveTab, showWelcomeModal, triggerRefetch } from '../../features/mainUi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAdd, faArrowLeft, faCalendar, faCheck, faFlag, faGreaterThan, faInfoCircle, faList, faSearch, faTable, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faArrowLeft, faArrowRight, faCalendar, faCheck, faFlag, faGreaterThan, faInfoCircle, faList, faSearch, faTable, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FullTask } from '../models/Task';
 import CustomImage from '../components/Image';
 import {GrSteps} from 'react-icons/gr';
-
+import Logo from './../../assets/logo.png'
 import { backend_server, randomColor } from '../constantes/constantes';
 import { Form } from 'react-router-dom';
 import TaskSkeleton from '../components/skeletons/TasksSkeletons';
 import { faLessThan } from '@fortawesome/free-solid-svg-icons';
 import { SubTask } from '../models/SubTask';
+import {BsTrophy} from 'react-icons/bs';
+import { useFetchObjectifsMutation, useSetObjectifMutation } from '../../features/objectif/objectif';
 
 // const socket = io("http://localhost:3000");
 
@@ -27,19 +29,29 @@ function Home() {
   const authState = useAppSelector((state:{auth:AuthState})=>state.auth)
   const mainUi = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi)
   const [key, setKey] = useState('home');
-
+  const [fetchObjectifs] = useFetchObjectifsMutation();
   const dispatch = useAppDispatch()
-  // useEffect(() => {
-  //   socket.on("receiveNotificationToUser"+authState.id.toString(),(obj)=>{
-  //     console.log(obj)
-  //     alert(obj.message)
-  //   })
+  useEffect(() => {
+    // socket.on("receiveNotificationToUser"+authState.id.toString(),(obj)=>{
+    //   console.log(obj)
+    //   alert(obj.message)
+    // })
+    async function fetchObj(){
+
+      const {objectifs} = await fetchObjectifs({}).unwrap()
+
+      if(objectifs.length  == 0){
+        dispatch(showWelcomeModal(true))
+      }
+    }
+    fetchObj();
+   
     
-  // }, []);
+  }, []);
   return (
     <div className='bg-light' style={{"minHeight":"100vh"}}>
       
-        <SideBar active="home" /> 
+        <SideBar active="home" isOpened={false} /> 
          <Header />
         <AddTask  />
         <div  className={` ${mainUi.margin_left} `}>
@@ -69,10 +81,98 @@ function Home() {
           mainUi.mainActiveTab == "calendrier" ? <CalendrierComponent /> : 
         <ListComponent />}
 
+        {<WelcomComponent />}
         </div>
         
     </div>
   )
+}
+function WelcomComponent(){
+  const welcomeModal = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi.welcomeModal)
+  const dispatch = useAppDispatch()
+  const [screen,SetScreen] = useState("welcome")
+  const [Mensuel,setMensuel] = useState(10)
+  const [Annuel,setAnnuel] = useState(100)
+  const [setObjectif]  = useSetObjectifMutation()
+  const [fetchObjectifs] = useFetchObjectifsMutation();
+
+  return (
+    <Modal show={welcomeModal} onHide={()=>{dispatch(showWelcomeModal(false))}}
+    centered>
+      
+        <Modal.Body>
+        { screen == "welcome" && (<div className=" my-2 py-3" >
+            <div className='d-flex flex-row justify-content-center'>
+
+              <img src={Logo} height={200} />
+            </div>
+            <h4 className='text-center px-3 typewriter'>
+              Bienvenue à TaskUp Votre parcours de  <br />
+             </h4>
+             <h4 className='text-center px-3 typewriter'>
+              productivité commence ici
+             </h4>
+            
+             <div className='d-flex flex-row justify-content-center '>
+
+             <Button className='main-btn col-3 my-3 mt-5' onClick={async ()=>{
+              SetScreen("objectifs")
+             }}>
+            Suivant <FontAwesomeIcon icon={faArrowRight} />
+          </Button>
+             </div>
+          </div>)
+
+        }
+         {screen == "objectifs" && (
+         <div>
+          <h3  className='text-center text-light'><BsTrophy    
+          className=' p-3 rounded'
+          style={{ 
+            "background":"#7b68ee",
+            "minHeight":"5vw",
+            "minWidth":"5vw",
+            "maxWidth":"5vw",
+            "maxHeight":"5vw"}} /> </h3>
+          <h3 className='text-center mb-4'>Fixer vos objectifs</h3>
+            <div className='d-flex flex-column align-items-center'>
+              <label htmlFor="" className='fw-bold'>Mensuel </label>
+              <div>
+
+              10  <input type='range' min={10} max={100} className='my-1' defaultValue={10} onChange={(e)=>{
+              setMensuel(parseInt(e.target.value));
+          }} /> 100
+              </div>
+          <br />
+           <label htmlFor="" className='fw-bold'>Annuel </label> 
+           <div>
+
+              100  <input type='range' min={100} max={1000} className='my-1' defaultValue={10} onChange={(e)=>{
+              setAnnuel(parseInt(e.target.value));
+          }} /> 1000
+           </div>
+           <Button className='main-btn col-3 my-3' onClick={async ()=>{
+              dispatch(showWelcomeModal(false))
+              const {message,success} = await setObjectif({
+                yearly:Annuel,
+                monthly:Mensuel
+              }).unwrap();
+             const {objectifs} = await fetchObjectifs({}).unwrap()
+
+              window.location.replace('/objectifs')  
+
+             }}>
+          <FontAwesomeIcon icon={faCheck} />  Valider -
+          </Button>
+            </div>
+            
+         </div>) }
+          
+        </Modal.Body>
+       
+      </Modal>
+  )
+
 }
 function CalendrierComponent(){
   const [today,setToday] = useState({date:new Date()});

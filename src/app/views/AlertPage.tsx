@@ -18,7 +18,7 @@ function AlertPage() {
   return (
     <div className='bg-white' style={{"minHeight":"100vh"}}>
       
-        <SideBar active="notifications" /> 
+        <SideBar active="notifications" isOpened={false} /> 
          <Header />
          <div  className={` ${mainUi.margin_left} `}>
             {isLoading && (

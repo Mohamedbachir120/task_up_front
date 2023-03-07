@@ -1,17 +1,22 @@
 import { createSlice,PayloadAction } from "@reduxjs/toolkit";
+import { Rapport } from "../app/models/Document";
 
 export class MainUiState{
-    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string,refetchKeywordDoc:string)  {
+    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string,refetchKeywordDoc:string,rapportSideBar:Rapport[],welcomeModal:boolean)  {
            this.margin_left = margin_left
            this.refetchKeyword = refetchKeyword
            this.mainActiveTab = mainActiveTab
            this.refetchKeywordDoc = refetchKeywordDoc
+           this.rapportSideBar = rapportSideBar
+           this.welcomeModal = welcomeModal
     }
    
    margin_left:string;
    refetchKeyword:string; 
    mainActiveTab:string;
    refetchKeywordDoc:string;
+   rapportSideBar:Rapport[];
+   welcomeModal:boolean
 
 }
 
@@ -19,7 +24,9 @@ export class MainUiState{
     margin_left:"margin_left",
     refetchKeyword:"",
     mainActiveTab:"tableau",
-    refetchKeywordDoc:""
+    refetchKeywordDoc:"",
+    rapportSideBar:[],
+    welcomeModal:false
 
     
 
@@ -50,6 +57,12 @@ const mainUiSlice = createSlice({
         triggerRefetchKeywordDoc(state,actions){
             state.refetchKeywordDoc = actions.payload;
         },
+        setRapportSideBar(state,actions){
+            state.rapportSideBar = actions.payload;
+        },
+        showWelcomeModal(state,actions){
+            state.welcomeModal = actions.payload;
+        }
 
      
         
@@ -57,7 +70,7 @@ const mainUiSlice = createSlice({
     }
 })
 
-export const {  initialize,hideMarginLeft,triggerRefetch , setMainActiveTab , triggerRefetchKeywordDoc } = mainUiSlice.actions;
+export const { setRapportSideBar ,showWelcomeModal,initialize,hideMarginLeft,triggerRefetch , setMainActiveTab , triggerRefetchKeywordDoc } = mainUiSlice.actions;
 export default mainUiSlice.reducer;
 
 

@@ -7,6 +7,7 @@ import { projectSlice } from "./../features/projects/project";
 import { taskSlice } from "../features/task/task";
 import { documentSlice } from "../features/task/document";
 import { alertSlice } from "../features/alerts/alert";
+import { objectifSlice } from "../features/objectif/objectif";
 
 export const store = configureStore({
     reducer:{
@@ -17,7 +18,8 @@ export const store = configureStore({
         [projectSlice.reducerPath]:projectSlice.reducer,
         [taskSlice.reducerPath]:taskSlice.reducer,
         [documentSlice.reducerPath]:documentSlice.reducer,
-        [alertSlice.reducerPath]:alertSlice.reducer
+        [alertSlice.reducerPath]:alertSlice.reducer,
+        [objectifSlice.reducerPath]:objectifSlice.reducer
 
     },
     
@@ -27,7 +29,8 @@ export const store = configureStore({
             projectSlice.middleware,
             taskSlice.middleware,
             documentSlice.middleware,
-            alertSlice.middleware
+            alertSlice.middleware,
+            objectifSlice.middleware
         );
 
     }

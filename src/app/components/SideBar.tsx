@@ -10,7 +10,7 @@ import {AiOutlineDown,AiOutlineDoubleLeft} from "react-icons/ai"
 import { IconType } from 'react-icons'
 import { backend_server, randomColor } from '../constantes/constantes'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { MainUiState, hideMarginLeft, initialize, triggerRefetchKeywordDoc } from '../../features/mainUi'
+import { MainUiState, hideMarginLeft, initialize, setRapportSideBar, triggerRefetchKeywordDoc } from '../../features/mainUi'
 import { useAddTaskMutation, useFetchRapportsMutation, useGenerateReportMutation } from '../../features/task/task'
 import Loader from './Loader'
 import { Rapport } from '../models/Document'
@@ -18,7 +18,7 @@ import { useFetchDepartementProjectsMutation, useStoreProjectMutation } from '..
 import { Project } from '../models/Project'
 import { useDeleteDocumentMutation } from '../../features/task/document'
 
-function SideBar(params:{active:string}) {
+function SideBar(params:{active:string,isOpened:boolean}) {
   const dispatch = useAppDispatch();
   const uistate = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi);
 
@@ -47,7 +47,7 @@ function SideBar(params:{active:string}) {
       <SearchComponent />
       <SideBarItem icon={VscHome} title='Accueil' active={params.active == "home" }  link='/home'/>
       <SideBarItem icon={VscBell} title='Notifications' active={params.active == "notifications" }  link='/notifications'/>
-      <ShowMoreComponent active={params.active}  />
+      <ShowMoreComponent active={params.active} isOpened={params.isOpened}  />
       <ProjectsComponent />
       <DocumentsComponent /></div>
   )}
@@ -79,8 +79,8 @@ function SideBarItem(params:{title:string,active:boolean,link:string,icon:IconTy
     </div>
   )
 }
-function ShowMoreComponent(params:{active:string}){
-  const [showMore,setShowMore] = useState(false)
+function ShowMoreComponent(params:{active:string,isOpened:boolean}){
+  const [showMore,setShowMore] = useState(params.isOpened)
 
   return(
     <div>
@@ -261,7 +261,7 @@ function DocumentsComponent(){
   const [documentModal,showDocumentMOdal] = useState(false);
   const dispatch = useAppDispatch()
   const [fetchRapport] = useFetchRapportsMutation();
-  const [rapports,setRapports] = useState<Rapport[]>([])
+  const rapports  = useAppSelector((state:{mainUi:MainUiState})=> state.mainUi.rapportSideBar)
   return (
   <div className='border-start-0 border-end-0 border '>
   <div className='  side-bar-section d-flex flex-row justify-content-between px-2  py-2'
@@ -269,7 +269,7 @@ function DocumentsComponent(){
     setshowDoc(!showDoc);
     try {
       const {rapports} = await fetchRapport({keyword:""}).unwrap();
-      setRapports(rapports);  
+      dispatch(setRapportSideBar(rapports));  
     } catch (error) {
       
     }
@@ -330,7 +330,7 @@ function DocumentsComponent(){
             try {
               const {url} = await  generateReport({date:e.target.value}).unwrap();
               const {rapports} = await fetchRapport({keyword:""}).unwrap();
-              setRapports(rapports);  
+              dispatch(setRapportSideBar(rapports));  
               dispatch(triggerRefetchKeywordDoc((url)))
               setUrl(url);
 
@@ -384,6 +384,7 @@ function DocumentComponent(param:{doc:Rapport}){
   const IMG = doc.name.split(' ')[1].charAt(0)
   const [deleteDocument,{isLoading}] = useDeleteDocumentMutation()
   const dispatch = useAppDispatch()
+  const [fetchRapport] = useFetchRapportsMutation();
 
   return (
     <div className='d-flex flex-row '>
@@ -396,7 +397,9 @@ function DocumentComponent(param:{doc:Rapport}){
     <div className='align-self-center' onClick={async ()=>{
       try {
         const {success,message} = await deleteDocument({id:doc.id}).unwrap();
-        dispatch(triggerRefetchKeywordDoc((Math.random() * 100).toString()))
+
+        const {rapports} = await fetchRapport({keyword:""}).unwrap();
+        dispatch(setRapportSideBar(rapports));  
 
       } catch (error) {
         

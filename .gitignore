@@ -11,7 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
-src/app/constantes
+src/app/constantes/constantes.ts
 
 # Editor directories and files
 .vscode/*

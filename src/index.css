@@ -216,3 +216,10 @@
   color: var(--MAINCOLOR);
 
 }
+.day_calendar{
+  min-height: 15vh !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  border: 1px solid rgba(128, 128, 128, 0.123);
+}

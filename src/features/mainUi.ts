@@ -2,13 +2,14 @@ import { createSlice,PayloadAction } from "@reduxjs/toolkit";
 import { Rapport } from "../app/models/Document";
 
 export class MainUiState{
-    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string,refetchKeywordDoc:string,rapportSideBar:Rapport[],welcomeModal:boolean)  {
+    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string,refetchKeywordDoc:string,rapportSideBar:Rapport[],welcomeModal:boolean,actifCalendarComponent:string)  {
            this.margin_left = margin_left
            this.refetchKeyword = refetchKeyword
            this.mainActiveTab = mainActiveTab
            this.refetchKeywordDoc = refetchKeywordDoc
            this.rapportSideBar = rapportSideBar
            this.welcomeModal = welcomeModal
+           this.actifCalendarComponent = actifCalendarComponent
     }
    
    margin_left:string;
@@ -17,6 +18,7 @@ export class MainUiState{
    refetchKeywordDoc:string;
    rapportSideBar:Rapport[];
    welcomeModal:boolean
+   actifCalendarComponent:string
 
 }
 
@@ -26,7 +28,8 @@ export class MainUiState{
     mainActiveTab:"tableau",
     refetchKeywordDoc:"",
     rapportSideBar:[],
-    welcomeModal:false
+    welcomeModal:false,
+    actifCalendarComponent:"day"
 
     
 
@@ -62,15 +65,19 @@ const mainUiSlice = createSlice({
         },
         showWelcomeModal(state,actions){
             state.welcomeModal = actions.payload;
+        },
+        setActifCalendarComponent(state,actions){
+            state.actifCalendarComponent = actions.payload;
+
         }
 
-     
+        
         
         
     }
 })
 
-export const { setRapportSideBar ,showWelcomeModal,initialize,hideMarginLeft,triggerRefetch , setMainActiveTab , triggerRefetchKeywordDoc } = mainUiSlice.actions;
+export const { setRapportSideBar, setActifCalendarComponent ,showWelcomeModal,initialize,hideMarginLeft,triggerRefetch , setMainActiveTab , triggerRefetchKeywordDoc } = mainUiSlice.actions;
 export default mainUiSlice.reducer;
 
 

@@ -7,14 +7,14 @@ import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap';
 import { AuthState } from '../../features/auth/auth-slice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useAddTaskMutation, useAssignSubTaskMutation, useDeleteMutation, useFetchDateTaskQuery, useFetchDayTasksQuery, useFetchTasksQuery, useGetSubTasksMutation, useMarkAsFinishedMutation } from '../../features/task/task';
-import { MainUiState, setMainActiveTab, showWelcomeModal, triggerRefetch } from '../../features/mainUi';
+import { MainUiState, setActifCalendarComponent, setMainActiveTab, showWelcomeModal, triggerRefetch } from '../../features/mainUi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAdd, faArrowLeft, faArrowRight, faCalendar, faCheck, faFlag, faGreaterThan, faInfoCircle, faList, faSearch, faTable, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faArrowLeft, faArrowRight, faCalendar, faCalendarDays, faChampagneGlasses, faCheck, faFlag, faGreaterThan, faInfoCircle, faList, faSearch, faTable, faToggleOn, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FullTask } from '../models/Task';
 import CustomImage from '../components/Image';
 import {GrSteps} from 'react-icons/gr';
 import Logo from './../../assets/logo.png'
-import { backend_server, randomColor } from '../constantes/constantes';
+import { backend_server, days, hours, monthNumberDays, months, randomColor } from '../constantes/constantes';
 import { Form } from 'react-router-dom';
 import TaskSkeleton from '../components/skeletons/TasksSkeletons';
 import { faLessThan } from '@fortawesome/free-solid-svg-icons';
@@ -63,11 +63,7 @@ function Home() {
               dispatch(setMainActiveTab("tableau"));
             }} >
               <FontAwesomeIcon icon={faTable} /> Tableau </li>
-            <li className={(mainUi.mainActiveTab == "liste") ? "col-auto px-3 py-2 border-start  bg-white mt-1 active_tab_item" : "col-auto px-3 py-2 border-start  bg-white mt-1 tab_item" }  
-              onClick={()=>{
-                dispatch(setMainActiveTab("liste"));
-              }}>
-              <FontAwesomeIcon icon={faList} /> Liste </li>
+         
             <li className={(mainUi.mainActiveTab == "calendrier") ? "col-auto px-3 py-2 border-start  bg-white mt-1 active_tab_item" : "col-auto px-3 py-2 border-start  bg-white mt-1 tab_item" }   onClick={()=>{
               dispatch(setMainActiveTab("calendrier"));
             }} >
@@ -79,7 +75,7 @@ function Home() {
 
         { mainUi.mainActiveTab == "tableau" ? <TableauComponent /> :
           mainUi.mainActiveTab == "calendrier" ? <CalendrierComponent /> : 
-        <ListComponent />}
+        <></>}
 
         {<WelcomComponent />}
         </div>
@@ -162,7 +158,7 @@ function WelcomComponent(){
               window.location.replace('/objectifs')  
 
              }}>
-          <FontAwesomeIcon icon={faCheck} />  Valider -
+          <FontAwesomeIcon icon={faCheck} />  Valider 
           </Button>
             </div>
             
@@ -174,7 +170,7 @@ function WelcomComponent(){
   )
 
 }
-function CalendrierComponent(){
+function CalendrierDayComponent(){
   const [today,setToday] = useState({date:new Date()});
   function addDay(date:Date) {
     const newDate = date
@@ -193,10 +189,9 @@ function CalendrierComponent(){
 
   const [keyword,setKeyword] = useState("")
   const {data,isFetching} = useFetchDayTasksQuery({date:today.date.toISOString().split('T')[0]});
-  const hours = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
-  const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-  const days = ["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"]
+
   const  searchPerDate = useFetchDateTaskQuery({keyword:keyword})
+  const dispatch = useAppDispatch()
   return (<div>
     <div className='d-flex flex-row bg-white p-2 ms-2'>
       <div className='col-3'>
@@ -237,6 +232,11 @@ function CalendrierComponent(){
       <div className='align-self-center'>
         {days[today.date.getDay()] } { today.date.getDate()} { months[today.date.getMonth()] } 
       </div>
+      <button className='btn btn-light ms-5' onClick={()=>{
+        dispatch(setActifCalendarComponent('month'))
+      }}>
+        <FontAwesomeIcon icon={faCalendarDays} /> Vue Mensuel
+      </button>
     </div>
     <div className='d-flex flex-row bg-white '>
       <div className='col-1 border border-start-0 p-3 text-center'>
@@ -267,12 +267,155 @@ function CalendrierComponent(){
     }
   </div>)
 }
-function ListComponent(){
-  return (<div>
-    {/* <h1>Liste  component</h1> */}
-</div>)
+function CalendrierComponent(){
+  const actif = useAppSelector((state:{mainUi:MainUiState})=> state.mainUi.actifCalendarComponent)
+  return (
+    <div>
+      {actif == 'day' &&  (<CalendrierDayComponent />)}
+      {actif == 'month' &&  (<CalendrierMonthComponent />)}
+
+    </div>
+  );
 }
 
+function CalendrierMonthComponent(){
+  const dispatch = useAppDispatch()
+  const [today,setToday] = useState({date:new Date()});
+  const [count,setCount] = useState(0)
+  const firstDay = today.date.getDay() -  (today.date.getDate() % 7) + 1  
+
+  return ( 
+    <div className=''>
+    <div className='d-flex flex-row bg-white p-2 ms-2'>
+  <div className='col-3'>
+
+<InputGroup className='col-3'>
+      <InputGroup.Text className='bg-white text-secondary'>
+
+      <FontAwesomeIcon icon={faSearch}  />
+
+      </InputGroup.Text>
+      
+  <FormControl className='border-start-0' type='text' placeholder='Tapez pour rechercher  ...' 
+      
+      onChange={(e) => {
+          // setKeyword(e.target.value);
+          // const date = new Date(searchPerDate.data?.date!)
+          // setToday({...today,date:date})
+      }}
+  
+  /> 
+</InputGroup>
+  </div>
+  <div className='align-self-center ms-2 col-auto'>
+    Aujourd'hui
+  </div>
+  <button className='btn col-auto text-secondary ms-1' onClick={()=>{
+      // setToday({...today,date:subDay(today.date)});
+     
+  }}>
+      <FontAwesomeIcon icon={faLessThan}  size='xs'/>
+  </button>
+  <button className='btn col-auto text-secondary' onClick={()=>{
+      // setToday({...today,date:addDay(today.date)});
+
+  }}>
+      <FontAwesomeIcon icon={faGreaterThan} size='xs' />
+  </button>
+  <div className='align-self-center'>
+    {days[today.date.getDay()] } { today.date.getDate()} { months[today.date.getMonth()] } 
+  </div>
+  
+  <div>
+
+  <input type="date" className='form-control col-2 ms-3' onChange={(e)=>{
+      setToday({date:new Date(e.target.value) })
+  }} />
+  </div>
+  <button className='btn btn-light ms-5' onClick={()=>{
+    dispatch(setActifCalendarComponent('day'))
+  }}>
+    <FontAwesomeIcon icon={faCalendarDays} /> Vue Jours 
+  </button>
+</div>
+<div className='d-flex flex-row '>
+  {days.map((day)=>
+  <div key={day} className='col p-2  bg-white border-end'> {day}</div>)}
+</div>
+<div className='d-flex flex-row'>
+  {days.map((day,index)=>{
+     
+    if(index >= firstDay){
+   
+       return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'> {index - firstDay + 1}</div>)
+     }else{
+      return  (<div key={day} className='col p-2 day_calendar bg-white '> </div>)
+
+     }
+  
+  })}
+</div>
+<div className='d-flex flex-row'>
+  {days.map((day,index)=>{
+     
+   
+   
+       return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'> {index+ (7 - firstDay) + 1}</div>)
+   
+  })}
+</div>
+<div className='d-flex flex-row'>
+  {days.map((day,index)=>{
+     
+   
+   
+       return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'> {index+ (14 - firstDay) + 1}</div>)
+   
+  })}
+</div>
+<div className='d-flex flex-row'>
+  {days.map((day,index)=>{
+     
+   
+   
+       return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'> {index+ (21 - firstDay) + 1}</div>)
+   
+  })}
+</div>
+<div className='d-flex flex-row'>
+  {days.map((day,index)=>{
+      const numberDay =  monthNumberDays.get(months[today.date.getMonth()]) 
+    
+      if(index+ (28 - firstDay) + 1 <= numberDay!) {
+
+        return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'> {index+ (28 - firstDay) + 1}</div>)
+      }else {
+      return  (<div key={day} className='col p-2  bg-white '> </div>)
+
+      }
+   
+  })}
+</div>
+<div className='d-flex flex-row'>
+  {days.map((day,index)=>{
+      const numberDay =  monthNumberDays.get(months[today.date.getMonth()]) 
+    
+      if(index+ (35 - firstDay) + 1 <= numberDay!) {
+
+        return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'> {index+ (35 - firstDay) + 1}</div>)
+      }else {
+      return  (<div key={day} className='col p-2  bg-white '> </div>)
+
+      }
+   
+  })}
+</div>
+
+</div>
+
+)
+
+}
 
 function TableauComponent(){
   const keyword = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi.refetchKeyword);

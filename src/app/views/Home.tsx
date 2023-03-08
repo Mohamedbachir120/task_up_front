@@ -33,9 +33,8 @@ function Home() {
   const dispatch = useAppDispatch()
   useEffect(() => {
     socket.on("receiveNotificationToUser"+authState.id.toString(),(obj)=>{
-      console.log(obj)
-      alert(obj.message)
-      dispatch(showNotification({title:obj.title,message:obj.message}))
+      
+      dispatch(showNotification({title:obj.title,body:obj.message}))
     })
     async function fetchObj(){
 

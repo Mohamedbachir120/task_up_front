@@ -2,7 +2,7 @@ import { createSlice,PayloadAction } from "@reduxjs/toolkit";
 import { Rapport } from "../app/models/Document";
 
 export class MainUiState{
-    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string,refetchKeywordDoc:string,rapportSideBar:Rapport[],welcomeModal:boolean,actifCalendarComponent:string)  {
+    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string,refetchKeywordDoc:string,rapportSideBar:Rapport[],welcomeModal:boolean,actifCalendarComponent:string,notificationTitle:string,notificationBody:string,notificationShown:boolean)  {
            this.margin_left = margin_left
            this.refetchKeyword = refetchKeyword
            this.mainActiveTab = mainActiveTab
@@ -10,6 +10,10 @@ export class MainUiState{
            this.rapportSideBar = rapportSideBar
            this.welcomeModal = welcomeModal
            this.actifCalendarComponent = actifCalendarComponent
+           this.notificationBody = notificationBody
+           this.notificaionShown = notificationShown
+           this.notificationTitle = notificationTitle
+
     }
    
    margin_left:string;
@@ -19,6 +23,10 @@ export class MainUiState{
    rapportSideBar:Rapport[];
    welcomeModal:boolean
    actifCalendarComponent:string
+   notificationTitle:string
+    notificationBody:string
+    notificaionShown:boolean
+
 
 }
 
@@ -29,7 +37,11 @@ export class MainUiState{
     refetchKeywordDoc:"",
     rapportSideBar:[],
     welcomeModal:false,
-    actifCalendarComponent:"day"
+    actifCalendarComponent:"day",
+    notificationTitle:"",
+    notificationBody:"",
+    notificaionShown:false
+
 
     
 
@@ -69,6 +81,16 @@ const mainUiSlice = createSlice({
         setActifCalendarComponent(state,actions){
             state.actifCalendarComponent = actions.payload;
 
+        },
+        showNotification(state,actions){
+            state.notificationTitle = actions.payload.title
+            state.notificationBody = actions.payload.body
+            state.notificaionShown = true            
+        },
+        hideNotification(state){
+            state.notificationTitle = ""
+            state.notificationBody = ""
+            state.notificaionShown = false            
         }
 
         
@@ -77,7 +99,7 @@ const mainUiSlice = createSlice({
     }
 })
 
-export const { setRapportSideBar, setActifCalendarComponent ,showWelcomeModal,initialize,hideMarginLeft,triggerRefetch , setMainActiveTab , triggerRefetchKeywordDoc } = mainUiSlice.actions;
+export const { setRapportSideBar,showNotification,hideNotification , setActifCalendarComponent ,showWelcomeModal,initialize,hideMarginLeft,triggerRefetch , setMainActiveTab , triggerRefetchKeywordDoc } = mainUiSlice.actions;
 export default mainUiSlice.reducer;
 
 

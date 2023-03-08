@@ -7,7 +7,7 @@ import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap';
 import { AuthState } from '../../features/auth/auth-slice';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useAddTaskMutation, useAssignSubTaskMutation, useDeleteMutation, useFetchDateTaskQuery, useFetchDayTasksQuery, useFetchMonthTasksQuery, useFetchTasksQuery, useGetSubTasksMutation, useMarkAsFinishedMutation } from '../../features/task/task';
-import { MainUiState, setActifCalendarComponent, setMainActiveTab, showWelcomeModal, triggerRefetch } from '../../features/mainUi';
+import { MainUiState, setActifCalendarComponent, setMainActiveTab, showNotification, showWelcomeModal, triggerRefetch } from '../../features/mainUi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdd, faArrowLeft, faArrowRight, faCalendar, faCalendarDays, faChampagneGlasses, faCheck, faFlag, faGreaterThan, faInfoCircle, faList, faSearch, faTable, faToggleOn, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FullTask, Task } from '../models/Task';
@@ -21,21 +21,22 @@ import { faLessThan } from '@fortawesome/free-solid-svg-icons';
 import { SubTask } from '../models/SubTask';
 import {BsTrophy} from 'react-icons/bs';
 import { useFetchObjectifsMutation, useSetObjectifMutation } from '../../features/objectif/objectif';
+import NotificationAlert from '../components/Notification';
 
-// const socket = io("http://localhost:3000");
+const socket = io("http://localhost:3000");
 
 function Home() {
-  
   const authState = useAppSelector((state:{auth:AuthState})=>state.auth)
   const mainUi = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi)
   const [key, setKey] = useState('home');
   const [fetchObjectifs] = useFetchObjectifsMutation();
   const dispatch = useAppDispatch()
   useEffect(() => {
-    // socket.on("receiveNotificationToUser"+authState.id.toString(),(obj)=>{
-    //   console.log(obj)
-    //   alert(obj.message)
-    // })
+    socket.on("receiveNotificationToUser"+authState.id.toString(),(obj)=>{
+      console.log(obj)
+      alert(obj.message)
+      dispatch(showNotification({title:obj.title,message:obj.message}))
+    })
     async function fetchObj(){
 
       const {objectifs} = await fetchObjectifs({}).unwrap()
@@ -50,7 +51,7 @@ function Home() {
   }, []);
   return (
     <div className='bg-light' style={{"minHeight":"100vh"}}>
-      
+        <NotificationAlert />
         <SideBar active="home" isOpened={false} /> 
          <Header />
         <AddTask  />
@@ -83,6 +84,7 @@ function Home() {
     </div>
   )
 }
+
 function WelcomComponent(){
   const welcomeModal = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi.welcomeModal)
   const dispatch = useAppDispatch()
@@ -318,10 +320,10 @@ function CalendrierMonthComponent(){
     if(index >= firstDay){
    
        return  (<div key={day} className='col p-2 day_calendar bg-white border-end  text-end'>
-          {data?.tasks.filter((task)=> {
+          {data?.tasks.filter((task:Task)=> {
             const curren_day = task.end_date.split(' ')[0].split('-')[2]
            return parseInt(curren_day) == index - firstDay + 1
-          }).map((task)=>{
+          }).map((task:Task)=>{
             
             return (<TaskMonthComponent task={task} />)
           })}

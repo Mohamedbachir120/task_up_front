@@ -143,6 +143,7 @@
   position: fixed !important;
   right: 2vw;
   bottom: 2vw;
+  z-index: 2;
 
 }
 .ft-content{

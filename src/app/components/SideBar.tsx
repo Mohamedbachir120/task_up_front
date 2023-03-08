@@ -3,7 +3,7 @@ import logo from "../../assets/logo.png"
 import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconDefinition, faAdd, faArrowDown, faArrowRight, faArrowUp, faCalendar, faDownLong, faDownload, faFilePdf, faGear, faGreaterThan, faHome, faParagraph, faRedo, faSearch, faThumbsUp, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { Form, Link } from 'react-router-dom'
+import { Form, Link, useParams } from 'react-router-dom'
 import { VscHome,VscBell, VscGraphLine } from "react-icons/vsc";
 import {BsTrophy} from 'react-icons/bs';
 import {AiOutlineDown,AiOutlineDoubleLeft} from "react-icons/ai"
@@ -118,7 +118,7 @@ function ProjectsComponent(){
   const [projectModal,showProjectModal] = useState(false);
   const [storeProject,isLoading] = useStoreProjectMutation()
   const [screen,setScreen] = useState('intial');
- 
+ const {id} = useParams();
   return (
   <div className='border-start-0 border-end-0 border mt-3 '>
   <div className='  side-bar-section d-flex flex-row justify-content-between px-2  py-2'
@@ -152,7 +152,7 @@ function ProjectsComponent(){
   </div>
   <div className='ps-3' style={{"maxHeight":"30vh","overflowY":"auto"}}>
 
-    {  projects.map((project) =>(<ProjectComponent project={project} key={project.id} />))}
+    {  projects.map((project) =>(<ProjectComponent project={project} key={project.id}  active={parseInt(id ?? "0") == project.id} />))}
   </div>
   </div>)}
   <Modal show={projectModal} onHide={()=>{showProjectModal(false)}}>
@@ -243,10 +243,10 @@ function ProjectsComponent(){
   
   </div>)
 }
-function ProjectComponent(param:{project:Project}){
-  const {project} = param; 
+function ProjectComponent(param:{project:Project,active:boolean}){
+  const {project,active} = param; 
   return (
-  <div className= {"ps-3 side-bar-item py-1 my-1"}>
+  <div className= {active ? "active ps-3 side-bar-item py-1 my-1" : "ps-3 side-bar-item py-1 my-1"}>
   <Link  to={"/project/"+project.id}  >
    <img src={  `https://ui-avatars.com/api/?background=${randomColor(project.id)}&color=ffffff&name=${project.name.charAt(0)}`} />  &nbsp; {project.name}
   </Link>

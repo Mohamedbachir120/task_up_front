@@ -29,6 +29,9 @@ export interface TasksResponse {
 export interface DayTaskResponse{
     tasks:FullTask[]
 }
+export interface MonthTaskResponse{
+    tasks:Task[]
+}
 export interface TaskDateResponse {
     date:string
 }
@@ -37,6 +40,15 @@ export interface FileResponse {
 }
 export interface ListRapport {
     rapports : Rapport[]
+}
+export interface PerormanceResponse {
+    data_month:number[],
+    label_data_month:string[],
+    data_status:number[],
+    label_data_status:string[],
+    data_projects:number[]
+    label_data_projects:string[]
+
 }
 export const taskSlice = createApi({
     reducerPath: 'task',
@@ -53,8 +65,17 @@ export const taskSlice = createApi({
         fetchDayTasks:builder.query<DayTaskResponse,{date:string}>({
             query: (params) => {return `/get_day_tasks?date=${params.date}`;}
         }),
+        fetchMonthTasks:builder.query<MonthTaskResponse,{date:string}>({
+            query: (params) => {return `/get_month_task?date=${params.date}`;}
+        }),
         fetchDateTask:builder.query<TaskDateResponse,{keyword:string}>({
             query: (params) => {return `/get_task_date?keyword=${params.keyword}`;}
+        }),
+        fetchProjectTasks:builder.query<TasksResponse,{id:number}>({
+            query: (params) => ({
+                url:`/project_tasks/${params.id}`,
+                method: 'GET'
+                 })
         }),
         generateReport:builder.mutation<FileResponse,{date:string}>({
             query:(params) => ({
@@ -103,7 +124,13 @@ export const taskSlice = createApi({
                
             })
         }),
-        
+        performance:builder.mutation<PerormanceResponse,{}>({
+            query:(params) => ({
+                url:'/perfomances',
+                method: 'GET'
+
+            })
+        }),    
         addTask:builder.mutation<StandarResponse,
         {   users:number[],
             title:string,
@@ -138,4 +165,4 @@ export const taskSlice = createApi({
 
 })
 export const {
-    useFetchInitialDataQuery ,useGetSubTasksMutation, useFetchRapportsMutation,useGenerateReportMutation,useFetchDateTaskQuery,useFetchDayTasksQuery, useMarkAsFinishedMutation,useDeleteMutation,useAssignSubTaskMutation,useFetchTasksQuery,useAddTaskMutation} = taskSlice;
+    useFetchInitialDataQuery,usePerformanceMutation,useFetchProjectTasksQuery,useFetchMonthTasksQuery ,useGetSubTasksMutation, useFetchRapportsMutation,useGenerateReportMutation,useFetchDateTaskQuery,useFetchDayTasksQuery, useMarkAsFinishedMutation,useDeleteMutation,useAssignSubTaskMutation,useFetchTasksQuery,useAddTaskMutation} = taskSlice;

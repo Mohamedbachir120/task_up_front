@@ -6,11 +6,11 @@ import io from 'socket.io-client';
 import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap';
 import { AuthState } from '../../features/auth/auth-slice';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { useAddTaskMutation, useAssignSubTaskMutation, useDeleteMutation, useFetchDateTaskQuery, useFetchDayTasksQuery, useFetchTasksQuery, useGetSubTasksMutation, useMarkAsFinishedMutation } from '../../features/task/task';
+import { useAddTaskMutation, useAssignSubTaskMutation, useDeleteMutation, useFetchDateTaskQuery, useFetchDayTasksQuery, useFetchMonthTasksQuery, useFetchTasksQuery, useGetSubTasksMutation, useMarkAsFinishedMutation } from '../../features/task/task';
 import { MainUiState, setActifCalendarComponent, setMainActiveTab, showWelcomeModal, triggerRefetch } from '../../features/mainUi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdd, faArrowLeft, faArrowRight, faCalendar, faCalendarDays, faChampagneGlasses, faCheck, faFlag, faGreaterThan, faInfoCircle, faList, faSearch, faTable, faToggleOn, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FullTask } from '../models/Task';
+import { FullTask, Task } from '../models/Task';
 import CustomImage from '../components/Image';
 import {GrSteps} from 'react-icons/gr';
 import Logo from './../../assets/logo.png'
@@ -193,7 +193,7 @@ function CalendrierDayComponent(){
   const  searchPerDate = useFetchDateTaskQuery({keyword:keyword})
   const dispatch = useAppDispatch()
   return (<div>
-    <div className='d-flex flex-row bg-white p-2 ms-2'>
+    <div className='d-flex flex-row bg-white p-2 '>
       <div className='col-3'>
 
     <InputGroup className='col-3'>
@@ -279,51 +279,21 @@ function CalendrierComponent(){
 }
 
 function CalendrierMonthComponent(){
+  const [keyword,setKeyword] = useState('')
   const dispatch = useAppDispatch()
   const [today,setToday] = useState({date:new Date()});
   const [count,setCount] = useState(0)
   const firstDay = today.date.getDay() -  (today.date.getDate() % 7) + 1  
-
+  const  searchPerDate = useFetchDateTaskQuery({keyword:keyword})
+  const {data,isLoading} = useFetchMonthTasksQuery({date:today.date.toISOString().split('T')[0]})
   return ( 
     <div className=''>
-    <div className='d-flex flex-row bg-white p-2 ms-2'>
-  <div className='col-3'>
-
-<InputGroup className='col-3'>
-      <InputGroup.Text className='bg-white text-secondary'>
-
-      <FontAwesomeIcon icon={faSearch}  />
-
-      </InputGroup.Text>
-      
-  <FormControl className='border-start-0' type='text' placeholder='Tapez pour rechercher  ...' 
-      
-      onChange={(e) => {
-          // setKeyword(e.target.value);
-          // const date = new Date(searchPerDate.data?.date!)
-          // setToday({...today,date:date})
-      }}
+    <div className='d-flex flex-row bg-white p-2 '>
   
-  /> 
-</InputGroup>
-  </div>
-  <div className='align-self-center ms-2 col-auto'>
-    Aujourd'hui
-  </div>
-  <button className='btn col-auto text-secondary ms-1' onClick={()=>{
-      // setToday({...today,date:subDay(today.date)});
-     
-  }}>
-      <FontAwesomeIcon icon={faLessThan}  size='xs'/>
-  </button>
-  <button className='btn col-auto text-secondary' onClick={()=>{
-      // setToday({...today,date:addDay(today.date)});
 
-  }}>
-      <FontAwesomeIcon icon={faGreaterThan} size='xs' />
-  </button>
-  <div className='align-self-center'>
-    {days[today.date.getDay()] } { today.date.getDate()} { months[today.date.getMonth()] } 
+  
+  <div className='align-self-center ms-3 fw-bold'>
+     { months[today.date.getMonth()] } 
   </div>
   
   <div>
@@ -340,14 +310,22 @@ function CalendrierMonthComponent(){
 </div>
 <div className='d-flex flex-row '>
   {days.map((day)=>
-  <div key={day} className='col p-2  bg-white border-end'> {day}</div>)}
+  <div key={day} className='col p-2  bg-white border-end border-top'> {day}</div>)}
 </div>
 <div className='d-flex flex-row'>
   {days.map((day,index)=>{
      
     if(index >= firstDay){
    
-       return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'> {index - firstDay + 1}</div>)
+       return  (<div key={day} className='col p-2 day_calendar bg-white border-end  text-end'>
+          {data?.tasks.filter((task)=> {
+            const curren_day = task.end_date.split(' ')[0].split('-')[2]
+           return parseInt(curren_day) == index - firstDay + 1
+          }).map((task)=>{
+            
+            return (<TaskMonthComponent task={task} />)
+          })}
+         {index - firstDay + 1}</div>)
      }else{
       return  (<div key={day} className='col p-2 day_calendar bg-white '> </div>)
 
@@ -360,7 +338,18 @@ function CalendrierMonthComponent(){
      
    
    
-       return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'> {index+ (7 - firstDay) + 1}</div>)
+       return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'>
+           {data?.tasks.filter((task)=> {
+            const curren_day = task.end_date.split(' ')[0].split('-')[2]
+            console.log(curren_day, (index - firstDay +1))
+
+           return parseInt(curren_day) == index+ (7 - firstDay) + 1
+          }).map((task)=>{
+            
+            return (<TaskMonthComponent task={task} />)
+          })}
+        
+         {index+ (7 - firstDay) + 1}</div>)
    
   })}
 </div>
@@ -369,7 +358,16 @@ function CalendrierMonthComponent(){
      
    
    
-       return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'> {index+ (14 - firstDay) + 1}</div>)
+       return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'>
+           {data?.tasks.filter((task)=> {
+            const curren_day = task.end_date.split(' ')[0].split('-')[2]
+           return parseInt(curren_day) == index+ (14 - firstDay) + 1
+          }).map((task)=>{
+            
+            return (<TaskMonthComponent task={task} />)
+          })}
+        
+         {index+ (14 - firstDay) + 1}</div>)
    
   })}
 </div>
@@ -378,7 +376,15 @@ function CalendrierMonthComponent(){
      
    
    
-       return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'> {index+ (21 - firstDay) + 1}</div>)
+       return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'>
+           {data?.tasks.filter((task)=> {
+            const curren_day = task.end_date.split(' ')[0].split('-')[2]
+           return parseInt(curren_day) == index+ (21 - firstDay) + 1
+          }).map((task)=>{
+            
+            return (<TaskMonthComponent task={task} />)
+          })}
+         {index+ (21 - firstDay) + 1}</div>)
    
   })}
 </div>
@@ -388,7 +394,16 @@ function CalendrierMonthComponent(){
     
       if(index+ (28 - firstDay) + 1 <= numberDay!) {
 
-        return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'> {index+ (28 - firstDay) + 1}</div>)
+        return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'>
+             {data?.tasks.filter((task)=> {
+            const curren_day = task.end_date.split(' ')[0].split('-')[2]
+           return parseInt(curren_day) == index+ (28 - firstDay) + 1
+          }).map((task)=>{
+            
+            return (<TaskMonthComponent task={task} />)
+          })}
+          
+           {index+ (28 - firstDay) + 1}</div>)
       }else {
       return  (<div key={day} className='col p-2  bg-white '> </div>)
 
@@ -402,7 +417,16 @@ function CalendrierMonthComponent(){
     
       if(index+ (35 - firstDay) + 1 <= numberDay!) {
 
-        return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'> {index+ (35 - firstDay) + 1}</div>)
+        return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'>
+             {data?.tasks.filter((task)=> {
+            const curren_day = task.end_date.split(' ')[0].split('-')[2]
+           return parseInt(curren_day) == index+ (35 - firstDay) + 1
+          }).map((task)=>{
+            
+            return (<TaskMonthComponent task={task} />)
+          })}
+          
+           {index+ (35 - firstDay) + 1}</div>)
       }else {
       return  (<div key={day} className='col p-2  bg-white '> </div>)
 
@@ -417,6 +441,16 @@ function CalendrierMonthComponent(){
 
 }
 
+function TaskMonthComponent(param:{task:Task}){
+  const {task} = param
+  const bg = task.status == "EN RETARD" ? "bg-danger text-light" : task.status == "À FAIRE" ?  "bg-white": "bg-success text-light"
+  return (<div className={`text-start p-1 m-1 card ${bg}`} title={task.title}>
+    { task.title.length > 20 &&
+    task.title.substring(0,20)}
+     { task.title.length <= 20 &&
+    task.title}
+  </div>)
+}
 function TableauComponent(){
   const keyword = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi.refetchKeyword);
 
@@ -511,8 +545,8 @@ const TaskComponent = (param:{task:FullTask,color:string}) => {
 
       <FontAwesomeIcon icon={faFlag}  className={
          task.priority == 1 ? "text-danger" : 
-         task.priority == 2 ? "text-warning" :
-         task.priority == 3 ? "text-dark" :
+         task.priority == 2 ? "text-orange" :
+         task.priority == 3 ? "text-yellow" :
          "text-info"}  title='priorité' /> &nbsp;
     <span className='text-dark fs-6'> {task.title}</span>
     </div>

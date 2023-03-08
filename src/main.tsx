@@ -16,6 +16,8 @@ import PrivateWrapper from './app/hoc/Protected'
 import AlertPage from './app/views/AlertPage'
 import { Objectif } from './app/models/Objectif'
 import ObjectifPage from './app/views/Objectif'
+import ProjectPage from './app/views/ProjectPage'
+import PerformancePage from './app/views/PerformancePage'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -55,13 +57,28 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           </PrivateWrapper>
         }>
         </Route>
+        <Route path='/performances' element={
+          <PrivateWrapper>
+            <PerformancePage />
+          </PrivateWrapper>
+        }>
+        </Route>
         <Route path='/notifications' element={
           <PrivateWrapper>
 
             <AlertPage />
           </PrivateWrapper>
         }>
+         
           
+        </Route>
+        <Route path="/project/:id" element={
+          <PrivateWrapper>
+          <ProjectPage   />
+        </PrivateWrapper>   
+        } >
+
+
         </Route>
 
       </Routes>

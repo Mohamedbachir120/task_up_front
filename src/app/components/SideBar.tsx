@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconDefinition, faAdd, faArrowDown, faArrowRight, faArrowUp, faCalendar, faDownLong, faDownload, faFilePdf, faGear, faGreaterThan, faHome, faParagraph, faRedo, faSearch, faThumbsUp, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Form, Link, useParams } from 'react-router-dom'
 import { VscHome,VscBell, VscGraphLine } from "react-icons/vsc";
-import {BsTrophy} from 'react-icons/bs';
+import {BsPeople, BsTrophy} from 'react-icons/bs';
 import {AiOutlineDown,AiOutlineDoubleLeft} from "react-icons/ai"
 import { IconType } from 'react-icons'
 import { backend_server, randomColor } from '../constantes/constantes'
@@ -17,11 +17,12 @@ import { Rapport } from '../models/Document'
 import { useFetchDepartementProjectsMutation, useStoreProjectMutation } from '../../features/projects/project'
 import { Project } from '../models/Project'
 import { useDeleteDocumentMutation } from '../../features/task/document'
+import { AuthState } from '../../features/auth/auth-slice'
 
 function SideBar(params:{active:string,isOpened:boolean}) {
   const dispatch = useAppDispatch();
   const uistate = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi);
-
+  const auth = useAppSelector((state:{auth:AuthState}) => state.auth)
 
   if(uistate.margin_left == "margin_left"){ return   (
    
@@ -46,7 +47,10 @@ function SideBar(params:{active:string,isOpened:boolean}) {
       </div>
       <SearchComponent />
       <SideBarItem icon={VscHome} title='Accueil' active={params.active == "home" }  link='/home'/>
-      <SideBarItem icon={VscBell} title='Notifications' active={params.active == "notifications" }  link='/notifications'/>
+      {auth. role == "Chef de département" && (<SideBarItem icon={BsPeople} title='Département' active={params.active == "département" }  link='/departement'/>) }
+
+     <SideBarItem icon={VscBell} title='Notifications' active={params.active == "notifications" }  link='/notifications'/>
+      
       <ShowMoreComponent active={params.active} isOpened={params.isOpened}  />
       <ProjectsComponent />
       <DocumentsComponent /></div>

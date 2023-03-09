@@ -501,7 +501,7 @@ function TableauComponent(){
   
   )
 }
-const TaskComponent = (param:{task:FullTask,color:string}) => {
+export const TaskComponent = (param:{task:FullTask,color:string}) => {
       const [componentState,setComponentState] = useState('editing');
       const {task,color} = param;
       const [showSubTask,setShowSubTask] = useState("d-none")
@@ -696,7 +696,7 @@ const TaskComponent = (param:{task:FullTask,color:string}) => {
     </div> )
     
 }
-function LineComponent(color:{color:string}){
+export function LineComponent(color:{color:string}){
   return(<div className={ `${color.color} rounded`}  style={{"maxHeight":"0.3vh"}}> <br /> </div>);  
 
 }

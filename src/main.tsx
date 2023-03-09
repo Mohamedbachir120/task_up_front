@@ -18,6 +18,7 @@ import { Objectif } from './app/models/Objectif'
 import ObjectifPage from './app/views/Objectif'
 import ProjectPage from './app/views/ProjectPage'
 import PerformancePage from './app/views/PerformancePage'
+import DepartementPage from './app/views/DepartementPage'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -69,8 +70,17 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <AlertPage />
           </PrivateWrapper>
         }>
+       
+
+        </Route>
          
-          
+        <Route path='/departement' element={
+          <PrivateWrapper>
+
+            <DepartementPage />
+          </PrivateWrapper>
+        }>
+
         </Route>
         <Route path="/project/:id" element={
           <PrivateWrapper>

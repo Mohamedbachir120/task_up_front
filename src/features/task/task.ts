@@ -50,6 +50,9 @@ export interface PerormanceResponse {
     label_data_projects:string[]
 
 }
+export interface TaskPerProject{
+    data:Map<string,FullTask[]>
+}
 export const taskSlice = createApi({
     reducerPath: 'task',
     baseQuery: baseQueryWithReauth,
@@ -61,6 +64,15 @@ export const taskSlice = createApi({
         }),
         fetchTasks:builder.query<TasksResponse,{keyword:string}>({
             query: (params) => {return `/tasks`;}
+        }),
+        fetchDepartementTasks:builder.query<TasksResponse,{keyword:string}>({
+            query: (params) => {return `/task_per_department`;}
+        }),
+        fetchTasksPerProjetcs:builder.query<TaskPerProject,{keyword:string}>({
+            query: (params) => {return `/task_per_project`;}
+        }),
+        fetchTasksPerPersonnes:builder.query<TaskPerProject,{keyword:string}>({
+            query: (params) => {return `/task_per_personne`;}
         }),
         fetchDayTasks:builder.query<DayTaskResponse,{date:string}>({
             query: (params) => {return `/get_day_tasks?date=${params.date}`;}
@@ -77,6 +89,7 @@ export const taskSlice = createApi({
                 method: 'GET'
                  })
         }),
+      
         generateReport:builder.mutation<FileResponse,{date:string}>({
             query:(params) => ({
 
@@ -165,4 +178,4 @@ export const taskSlice = createApi({
 
 })
 export const {
-    useFetchInitialDataQuery,usePerformanceMutation,useFetchProjectTasksQuery,useFetchMonthTasksQuery ,useGetSubTasksMutation, useFetchRapportsMutation,useGenerateReportMutation,useFetchDateTaskQuery,useFetchDayTasksQuery, useMarkAsFinishedMutation,useDeleteMutation,useAssignSubTaskMutation,useFetchTasksQuery,useAddTaskMutation} = taskSlice;
+    useFetchInitialDataQuery,useFetchTasksPerProjetcsQuery,useFetchTasksPerPersonnesQuery,useFetchDepartementTasksQuery,usePerformanceMutation,useFetchProjectTasksQuery,useFetchMonthTasksQuery ,useGetSubTasksMutation, useFetchRapportsMutation,useGenerateReportMutation,useFetchDateTaskQuery,useFetchDayTasksQuery, useMarkAsFinishedMutation,useDeleteMutation,useAssignSubTaskMutation,useFetchTasksQuery,useAddTaskMutation} = taskSlice;

@@ -11,7 +11,7 @@ import { IconType } from 'react-icons'
 import { backend_server, randomColor } from '../constantes/constantes'
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { MainUiState, hideMarginLeft, initialize, setRapportSideBar, triggerRefetchKeywordDoc } from '../../features/mainUi'
-import { useAddTaskMutation, useFetchRapportsMutation, useGenerateReportMutation } from '../../features/task/task'
+import { useAddTaskMutation, useFetchRapportsMutation, useGenerateDepartementReportMutation, useGenerateReportMutation } from '../../features/task/task'
 import Loader from './Loader'
 import { Rapport } from '../models/Document'
 import { useFetchDepartementProjectsMutation, useStoreProjectMutation } from '../../features/projects/project'
@@ -123,6 +123,7 @@ function ProjectsComponent(){
   const [storeProject,isLoading] = useStoreProjectMutation()
   const [screen,setScreen] = useState('intial');
  const {id} = useParams();
+ const[isFixed,setIsFixed] = useState(0)
   return (
   <div className='border-start-0 border-end-0 border mt-3 '>
   <div className='  side-bar-section d-flex flex-row justify-content-between px-2  py-2'
@@ -190,8 +191,27 @@ function ProjectsComponent(){
            
           }}
           /> 
+         
     </InputGroup>
-  
+    <div className='mt-4'>
+          <div>
+          <label htmlFor="" className='my-2'> Le projet posséde t-il des tâches répétitives ?</label>
+          
+          </div>
+          <label htmlFor="" className='mx-3'>Non &nbsp; </label>
+          <input type='radio' value={"isFixed"} checked={isFixed == 0} onChange={()=>{
+            setIsFixed(0)
+          }}  />
+          <label htmlFor="" className='mx-3'>Oui </label>
+
+          <input type='radio' value={"isFixed"} checked={isFixed == 1} 
+          onChange={()=>{
+            setIsFixed(1)
+          }}
+          />
+
+          
+          </div>
           </div>)}
           {screen == 'success' && (<div>
             <div className='d-flex flex-row justify-content-center'>
@@ -218,7 +238,8 @@ function ProjectsComponent(){
             
               try {
                   setScreen("loading");
-                  const  {success,message} = await  storeProject({name:name}).unwrap();
+                  console.log(isFixed)
+                  const  {success,message} = await  storeProject({name:name,is_fixed:isFixed}).unwrap();
                   const {data} = await getDepartementProject({keyword:""}).unwrap();
                   setProjects(data); 
                   setScreen("success");
@@ -260,8 +281,11 @@ function DocumentsComponent(){
   const [date,setDate] = useState({date:new Date()})
   const [showDoc,setshowDoc] = useState(false)
   const [url,setUrl] = useState('');
+  const auth = useAppSelector((state:{auth:AuthState}) => state.auth)
+
   const keyword = useAppSelector((state:{mainUi:MainUiState})=> state.mainUi.refetchKeywordDoc)
   const [generateReport,{isLoading}] = useGenerateReportMutation();
+  const [generateDepartmentReport] = useGenerateDepartementReportMutation();
   const [documentModal,showDocumentMOdal] = useState(false);
   const dispatch = useAppDispatch()
   const [fetchRapport] = useFetchRapportsMutation();
@@ -332,11 +356,20 @@ function DocumentsComponent(){
           onChange={async (e) => {
             console.log(e.target.value);
             try {
-              const {url} = await  generateReport({date:e.target.value}).unwrap();
-              const {rapports} = await fetchRapport({keyword:""}).unwrap();
-              dispatch(setRapportSideBar(rapports));  
-              dispatch(triggerRefetchKeywordDoc((url)))
-              setUrl(url);
+              if(auth.role == "Chef de département"){
+
+                const {url} = await  generateDepartmentReport({date:e.target.value}).unwrap();
+                const {rapports} = await fetchRapport({keyword:""}).unwrap();
+                dispatch(setRapportSideBar(rapports));  
+                dispatch(triggerRefetchKeywordDoc((url)))
+                setUrl(url);
+              }else{
+                const {url} = await  generateReport({date:e.target.value}).unwrap();
+                const {rapports} = await fetchRapport({keyword:""}).unwrap();
+                dispatch(setRapportSideBar(rapports));  
+                dispatch(triggerRefetchKeywordDoc((url)))
+                setUrl(url);
+              }
 
             } catch (error) {
               

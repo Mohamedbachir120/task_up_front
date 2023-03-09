@@ -100,6 +100,16 @@ export const taskSlice = createApi({
                 }
             })
         }),
+        generateDepartementReport:builder.mutation<FileResponse,{date:string}>({
+            query:(params) => ({
+
+                url:`/generate_departement_report`,
+                method:'POST',
+                body : {
+                    date:params.date
+                }
+            })
+        }),
 
         fetchRapports: builder.mutation<ListRapport,{keyword:string}>({
             query:(params) => ({
@@ -178,4 +188,4 @@ export const taskSlice = createApi({
 
 })
 export const {
-    useFetchInitialDataQuery,useFetchTasksPerProjetcsQuery,useFetchTasksPerPersonnesQuery,useFetchDepartementTasksQuery,usePerformanceMutation,useFetchProjectTasksQuery,useFetchMonthTasksQuery ,useGetSubTasksMutation, useFetchRapportsMutation,useGenerateReportMutation,useFetchDateTaskQuery,useFetchDayTasksQuery, useMarkAsFinishedMutation,useDeleteMutation,useAssignSubTaskMutation,useFetchTasksQuery,useAddTaskMutation} = taskSlice;
+    useFetchInitialDataQuery,useFetchTasksPerProjetcsQuery,useGenerateDepartementReportMutation,useFetchTasksPerPersonnesQuery,useFetchDepartementTasksQuery,usePerformanceMutation,useFetchProjectTasksQuery,useFetchMonthTasksQuery ,useGetSubTasksMutation, useFetchRapportsMutation,useGenerateReportMutation,useFetchDateTaskQuery,useFetchDayTasksQuery, useMarkAsFinishedMutation,useDeleteMutation,useAssignSubTaskMutation,useFetchTasksQuery,useAddTaskMutation} = taskSlice;

@@ -24,12 +24,13 @@ export const projectSlice = createApi({
             method: 'GET'}),
 
         }),
-        storeProject:builder.mutation<StandarResponse,{name:string}>({
+        storeProject:builder.mutation<StandarResponse,{name:string,is_fixed:number}>({
             query: (params) => ({
                 url:"/project",
                 method:"POST",
                 body:{
                     name:params.name,
+                    is_fixed:params.is_fixed
                 }
             })
         })

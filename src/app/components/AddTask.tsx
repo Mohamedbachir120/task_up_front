@@ -14,11 +14,11 @@ import { Project } from '../models/Project'
 import { useAddTaskMutation, useFetchInitialDataQuery } from '../../features/task/task'
 import { AuthState } from '../../features/auth/auth-slice'
 import Loader from './Loader'
-import { initialize, triggerRefetch } from '../../features/mainUi'
+import { MainUiState, initialize, triggerRefetch } from '../../features/mainUi'
 import { User } from '../models/User'
 
 function AddTask() {
-  const [keyword,setKeyword] = useState("")
+  const keyword = useAppSelector((state:{mainUi:MainUiState})=> state.mainUi.refetchInitialAddTask)
   const {data,isFetching,refetch} = useFetchInitialDataQuery({keyword});
   const [taskInfos,setTaskInfos] = useState<{title:string,description:string,selectedProject:number|undefined}>({title:"",description:"",selectedProject:0})
   const [searchUser,setSearchUser] = useState("")

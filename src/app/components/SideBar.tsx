@@ -10,7 +10,7 @@ import {AiOutlineDown,AiOutlineDoubleLeft} from "react-icons/ai"
 import { IconType } from 'react-icons'
 import { backend_server, randomColor } from '../constantes/constantes'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { MainUiState, hideMarginLeft, initialize, setRapportSideBar, showModalSeach, triggerRefetchKeywordDoc } from '../../features/mainUi'
+import { MainUiState, hideMarginLeft, initialize, setRapportSideBar, setRefetchInitialAddTask, showModalSeach, triggerRefetchKeywordDoc } from '../../features/mainUi'
 import { useAddTaskMutation, useFetchRapportsMutation, useGenerateDepartementReportMutation, useGenerateReportMutation, useSearchQuery } from '../../features/task/task'
 import Loader from './Loader'
 import { Rapport } from '../models/Document'
@@ -37,7 +37,9 @@ function SideBar(params:{active:string,isOpened:boolean}) {
       </div>
       <div className="d-flex flex-row justify-content-end">
 
-      <button className='btn text-secondary'>
+      <button className='btn text-secondary' title='settings' onClick={()=>{
+        window.location.replace('/settings');
+      }}>
         <FontAwesomeIcon  icon={faGear} />
       </button> 
       <button className='btn text-violet' onClick={()=>{
@@ -241,6 +243,7 @@ function ProjectsComponent(){
   const [storeProject,isLoading] = useStoreProjectMutation()
   const [screen,setScreen] = useState('intial');
  const {id} = useParams();
+ const dispatch = useAppDispatch();
  const[isFixed,setIsFixed] = useState(0)
   return (
   <div className='border-start-0 border-end-0 border mt-3 '>
@@ -362,6 +365,7 @@ function ProjectsComponent(){
                   setProjects(data); 
                   setScreen("success");
 
+                  dispatch(setRefetchInitialAddTask((Math.random() * 100).toString()))
 
                   setTimeout(() => {
                       setName("")

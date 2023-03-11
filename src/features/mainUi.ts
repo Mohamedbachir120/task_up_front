@@ -2,7 +2,7 @@ import { createSlice,PayloadAction } from "@reduxjs/toolkit";
 import { Rapport } from "../app/models/Document";
 
 export class MainUiState{
-    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string,refetchKeywordDoc:string,rapportSideBar:Rapport[],welcomeModal:boolean,actifCalendarComponent:string,notificationTitle:string,notificationBody:string,notificationShown:boolean,modalSearch:boolean)  {
+    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string,refetchKeywordDoc:string,rapportSideBar:Rapport[],welcomeModal:boolean,actifCalendarComponent:string,notificationTitle:string,notificationBody:string,notificationShown:boolean,modalSearch:boolean,refetchInitialAddTask:string)  {
            this.margin_left = margin_left
            this.refetchKeyword = refetchKeyword
            this.mainActiveTab = mainActiveTab
@@ -14,7 +14,7 @@ export class MainUiState{
            this.notificaionShown = notificationShown
            this.notificationTitle = notificationTitle
            this.modalSearch  = modalSearch
-
+           this.refetchInitialAddTask = refetchInitialAddTask 
     }
    
    margin_left:string;
@@ -28,6 +28,7 @@ export class MainUiState{
     notificationBody:string
     notificaionShown:boolean
     modalSearch:boolean
+    refetchInitialAddTask:string
 
 
 }
@@ -39,12 +40,13 @@ export class MainUiState{
     refetchKeywordDoc:"",
     rapportSideBar:[],
     welcomeModal:false,
-    actifCalendarComponent:"day",
+    actifCalendarComponent:"month",
     notificationTitle:"",
     notificationBody:"",
     notificaionShown:false,
-    modalSearch:false
-
+    modalSearch:false,
+    refetchInitialAddTask:"",
+    
 
     
 
@@ -97,6 +99,9 @@ const mainUiSlice = createSlice({
         },
         showModalSeach(state,actions){
             state.modalSearch = actions.payload
+        },
+        setRefetchInitialAddTask(state,actions){
+            state.refetchInitialAddTask = actions.payload
         }
 
 
@@ -106,7 +111,7 @@ const mainUiSlice = createSlice({
     }
 })
 
-export const { setRapportSideBar, showModalSeach,showNotification,hideNotification , setActifCalendarComponent ,showWelcomeModal,initialize,hideMarginLeft,triggerRefetch , setMainActiveTab , triggerRefetchKeywordDoc } = mainUiSlice.actions;
+export const { setRapportSideBar, setRefetchInitialAddTask,showModalSeach,showNotification,hideNotification , setActifCalendarComponent ,showWelcomeModal,initialize,hideMarginLeft,triggerRefetch , setMainActiveTab , triggerRefetchKeywordDoc } = mainUiSlice.actions;
 export default mainUiSlice.reducer;
 
 

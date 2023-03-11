@@ -19,6 +19,7 @@ import ObjectifPage from './app/views/Objectif'
 import ProjectPage from './app/views/ProjectPage'
 import PerformancePage from './app/views/PerformancePage'
 import DepartementPage from './app/views/DepartementPage'
+import Profil from './app/views/ProfilPage'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -90,7 +91,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 
 
         </Route>
-
+        <Route path="/settings" element={
+          <PrivateWrapper>
+            <Profil />
+          </PrivateWrapper>
+        }></Route>
       </Routes>
     </BrowserRouter>
     </Provider>

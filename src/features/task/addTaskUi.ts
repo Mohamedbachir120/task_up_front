@@ -62,7 +62,7 @@ const addTaskUiSlice = createSlice({
 
         },
         add(state){
-            return {...state, subTasks:[...state.subTasks,new SubTask("   ")]}
+            return {...state, subTasks:[...state.subTasks,new SubTask(0,"   ","   ")]}
         },
         addUser(state,actions){
             return {...state, selectedUsers:[...state.selectedUsers,actions.payload]}
@@ -78,7 +78,7 @@ const addTaskUiSlice = createSlice({
         change(state,actions){
 
             return {...state,subTasks:state.subTasks.map((e:SubTask,i:number) =>{
-                if(i == actions.payload.index) return new SubTask(actions.payload.value);
+                if(i == actions.payload.index) return new SubTask(actions.payload.value," ");
                 return e; 
           
               })} 

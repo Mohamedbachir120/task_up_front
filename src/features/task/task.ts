@@ -53,11 +53,20 @@ export interface PerormanceResponse {
 export interface TaskPerProject{
     data:Map<string,FullTask[]>
 }
+export interface SearchResponse{
+    users:User[],
+    tasks:FullTask[],
+    projects:Project[],
+    rapports:Rapport[]
+}
 export const taskSlice = createApi({
     reducerPath: 'task',
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
 
+        search:builder.query<SearchResponse,{filter:string,keyword:string}>({
+            query:(params) => {return `/search?filter=${params.filter}&keyword=${params.keyword}`}
+        }),
         fetchInitialData: builder.query<ListResponse<Project>,{keyword:string}>({
             query: (params) => {return `/fetch_initial_data`;},
 
@@ -188,4 +197,4 @@ export const taskSlice = createApi({
 
 })
 export const {
-    useFetchInitialDataQuery,useFetchTasksPerProjetcsQuery,useGenerateDepartementReportMutation,useFetchTasksPerPersonnesQuery,useFetchDepartementTasksQuery,usePerformanceMutation,useFetchProjectTasksQuery,useFetchMonthTasksQuery ,useGetSubTasksMutation, useFetchRapportsMutation,useGenerateReportMutation,useFetchDateTaskQuery,useFetchDayTasksQuery, useMarkAsFinishedMutation,useDeleteMutation,useAssignSubTaskMutation,useFetchTasksQuery,useAddTaskMutation} = taskSlice;
+    useFetchInitialDataQuery,useSearchQuery,useFetchTasksPerProjetcsQuery,useGenerateDepartementReportMutation,useFetchTasksPerPersonnesQuery,useFetchDepartementTasksQuery,usePerformanceMutation,useFetchProjectTasksQuery,useFetchMonthTasksQuery ,useGetSubTasksMutation, useFetchRapportsMutation,useGenerateReportMutation,useFetchDateTaskQuery,useFetchDayTasksQuery, useMarkAsFinishedMutation,useDeleteMutation,useAssignSubTaskMutation,useFetchTasksQuery,useAddTaskMutation} = taskSlice;

@@ -2,7 +2,7 @@ import { createSlice,PayloadAction } from "@reduxjs/toolkit";
 import { Rapport } from "../app/models/Document";
 
 export class MainUiState{
-    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string,refetchKeywordDoc:string,rapportSideBar:Rapport[],welcomeModal:boolean,actifCalendarComponent:string,notificationTitle:string,notificationBody:string,notificationShown:boolean)  {
+    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string,refetchKeywordDoc:string,rapportSideBar:Rapport[],welcomeModal:boolean,actifCalendarComponent:string,notificationTitle:string,notificationBody:string,notificationShown:boolean,modalSearch:boolean)  {
            this.margin_left = margin_left
            this.refetchKeyword = refetchKeyword
            this.mainActiveTab = mainActiveTab
@@ -13,6 +13,7 @@ export class MainUiState{
            this.notificationBody = notificationBody
            this.notificaionShown = notificationShown
            this.notificationTitle = notificationTitle
+           this.modalSearch  = modalSearch
 
     }
    
@@ -26,6 +27,7 @@ export class MainUiState{
    notificationTitle:string
     notificationBody:string
     notificaionShown:boolean
+    modalSearch:boolean
 
 
 }
@@ -40,7 +42,8 @@ export class MainUiState{
     actifCalendarComponent:"day",
     notificationTitle:"",
     notificationBody:"",
-    notificaionShown:false
+    notificaionShown:false,
+    modalSearch:false
 
 
     
@@ -91,7 +94,11 @@ const mainUiSlice = createSlice({
             state.notificationTitle = ""
             state.notificationBody = ""
             state.notificaionShown = false            
+        },
+        showModalSeach(state,actions){
+            state.modalSearch = actions.payload
         }
+
 
         
         
@@ -99,7 +106,7 @@ const mainUiSlice = createSlice({
     }
 })
 
-export const { setRapportSideBar,showNotification,hideNotification , setActifCalendarComponent ,showWelcomeModal,initialize,hideMarginLeft,triggerRefetch , setMainActiveTab , triggerRefetchKeywordDoc } = mainUiSlice.actions;
+export const { setRapportSideBar, showModalSeach,showNotification,hideNotification , setActifCalendarComponent ,showWelcomeModal,initialize,hideMarginLeft,triggerRefetch , setMainActiveTab , triggerRefetchKeywordDoc } = mainUiSlice.actions;
 export default mainUiSlice.reducer;
 
 

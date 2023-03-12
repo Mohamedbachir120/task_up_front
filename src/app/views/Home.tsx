@@ -284,7 +284,8 @@ function CalendrierMonthComponent(){
   const dispatch = useAppDispatch()
   const [today,setToday] = useState({date:new Date()});
   const [count,setCount] = useState(0)
-  const firstDay = today.date.getDay() -  (today.date.getDate() % 7) + 1  
+  const firstDay= (today.date.getDay() -  (today.date.getDate() % 7)+1 ) < 0 ? (today.date.getDay() -  (today.date.getDate() % 7)+1 ) + 7 : (today.date.getDay() -  (today.date.getDate() % 7)+1 )  
+
   const  searchPerDate = useFetchDateTaskQuery({keyword:keyword})
   const {data,isLoading} = useFetchMonthTasksQuery({date:today.date.toISOString().split('T')[0]})
   return ( 
@@ -315,7 +316,7 @@ function CalendrierMonthComponent(){
 </div>
 <div className='d-flex flex-row'>
   {days.map((day,index)=>{
-     
+     console.log(firstDay,index)
     if(index >= firstDay){
    
        return  (<div key={day} className='col p-2 day_calendar bg-white border-end  text-end'>
@@ -336,7 +337,7 @@ function CalendrierMonthComponent(){
 </div>
 <div className='d-flex flex-row'>
   {days.map((day,index)=>{
-     
+    
    
    
        return  (<div key={day} className='col p-2 day_calendar bg-white border-end text-end'>

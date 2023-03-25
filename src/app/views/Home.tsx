@@ -23,7 +23,6 @@ import {BsTrophy} from 'react-icons/bs';
 import { useFetchObjectifsMutation, useSetObjectifMutation } from '../../features/objectif/objectif';
 import NotificationAlert from '../components/Notification';
 
-const socket = io("http://localhost:3000");
 
 function Home() {
   const authState = useAppSelector((state:{auth:AuthState})=>state.auth)
@@ -32,10 +31,7 @@ function Home() {
   const [fetchObjectifs] = useFetchObjectifsMutation();
   const dispatch = useAppDispatch()
   useEffect(() => {
-    socket.on("receiveNotificationToUser"+authState.id.toString(),(obj)=>{
-      
-      dispatch(showNotification({title:obj.title,body:obj.message}))
-    })
+ 
     async function fetchObj(){
 
       const {objectifs} = await fetchObjectifs({}).unwrap()

@@ -9,6 +9,7 @@ import { Alert } from '../models/Alert'
 import { Button, Card, Placeholder } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell, faCheck, faEye } from '@fortawesome/free-solid-svg-icons'
+import NotificationAlert from '../components/Notification'
 
 function AlertPage() {
     const  [keyword,setKeyword] =  useState('')
@@ -17,7 +18,8 @@ function AlertPage() {
     const mainUi = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi)
   return (
     <div className='bg-white' style={{"minHeight":"100vh"}}>
-      
+          <NotificationAlert />
+
         <SideBar active="notifications" isOpened={false} /> 
          <Header />
          <div  className={` ${mainUi.margin_left} `}>

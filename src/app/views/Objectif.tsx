@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faEdit, faJournalWhills, faTasks, faTasksAlt } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import { Button } from 'react-bootstrap'
+import NotificationAlert from '../components/Notification'
 
 function ObjectifPage() {
     const  [keyword,setKeyword] =  useState('')
@@ -25,6 +26,8 @@ function ObjectifPage() {
       
         <SideBar active="objectifs" isOpened={true} /> 
          <Header />
+         <NotificationAlert />
+
              { data?.objectifs?.length && screen == "view"     && (
             <div className={`${mainUi.margin_left}  `}>
 

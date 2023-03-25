@@ -74,8 +74,14 @@ export const taskSlice = createApi({
         fetchTasks:builder.query<TasksResponse,{keyword:string}>({
             query: (params) => {return `/tasks`;}
         }),
-        fetchDepartementTasks:builder.query<TasksResponse,{keyword:string}>({
+        fetchDepartementTasks:builder.query<TaskPerProject,{keyword:string}>({
             query: (params) => {return `/task_per_department`;}
+        }),
+        fetchDepartementTasksStatus:builder.query<TasksResponse,{keyword:string}>({
+            query: (params) => {return `/task_per_department_status`;}
+        }),
+        fetchDirectionTasksStatus:builder.query<TasksResponse,{keyword:string}>({
+            query: (params) => {return `/task_per_direction_status`;}
         }),
         fetchTasksPerProjetcs:builder.query<TaskPerProject,{keyword:string}>({
             query: (params) => {return `/task_per_project`;}
@@ -197,4 +203,4 @@ export const taskSlice = createApi({
 
 })
 export const {
-    useFetchInitialDataQuery,useSearchQuery,useFetchTasksPerProjetcsQuery,useGenerateDepartementReportMutation,useFetchTasksPerPersonnesQuery,useFetchDepartementTasksQuery,usePerformanceMutation,useFetchProjectTasksQuery,useFetchMonthTasksQuery ,useGetSubTasksMutation, useFetchRapportsMutation,useGenerateReportMutation,useFetchDateTaskQuery,useFetchDayTasksQuery, useMarkAsFinishedMutation,useDeleteMutation,useAssignSubTaskMutation,useFetchTasksQuery,useAddTaskMutation} = taskSlice;
+    useFetchInitialDataQuery,useSearchQuery,useFetchDepartementTasksQuery,useFetchTasksPerProjetcsQuery,useGenerateDepartementReportMutation,useFetchTasksPerPersonnesQuery,useFetchDirectionTasksStatusQuery,useFetchDepartementTasksStatusQuery,usePerformanceMutation,useFetchProjectTasksQuery,useFetchMonthTasksQuery ,useGetSubTasksMutation, useFetchRapportsMutation,useGenerateReportMutation,useFetchDateTaskQuery,useFetchDayTasksQuery, useMarkAsFinishedMutation,useDeleteMutation,useAssignSubTaskMutation,useFetchTasksQuery,useAddTaskMutation} = taskSlice;

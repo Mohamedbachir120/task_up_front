@@ -22,8 +22,8 @@ import { SubTask } from '../models/SubTask';
 import {BsTrophy} from 'react-icons/bs';
 import { useFetchObjectifsMutation, useSetObjectifMutation } from '../../features/objectif/objectif';
 import { LineComponent, TaskComponent } from './Home';
+import NotificationAlert from '../components/Notification';
 
-// const socket = io("http://localhost:3000");
 
 function ProjectPage() {
   
@@ -31,18 +31,11 @@ function ProjectPage() {
   const mainUi = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi)
   const [key, setKey] = useState('home');
   const dispatch = useAppDispatch()
-  useEffect(() => {
-    // socket.on("receiveNotificationToUser"+authState.id.toString(),(obj)=>{
-    //   console.log(obj)
-    //   alert(obj.message)
-    // })
-   
-   
-    
-  }, []);
+
   return (
     <div className='bg-light' style={{"minHeight":"100vh"}}>
-      
+        <NotificationAlert />
+
         <SideBar active="project" isOpened={false} /> 
          <Header />
         <div  className={` ${mainUi.margin_left} `}>
@@ -91,7 +84,7 @@ function TableauComponent(){
           <p className='m-1 text-secondary p-2'> À FAIRE  <span className='rounded-circle card d-inline px-1 mx-1'> {data?.todo.length } </span> </p>
         </div>
         <div className='rounded' style={{"maxHeight":"63vh","overflowY":"auto"}}>
-          {!isFetching  && data?.todo.map((todo) =>(<TaskComponent  key={todo.id} task={todo} color='text-warning' />))}
+          {!isFetching  && data?.todo.map((todo:FullTask) =>(<TaskComponent  key={todo.id} task={todo} color='text-warning' />))}
         </div>
      </div>
      <div className='col-3 mx-3'>

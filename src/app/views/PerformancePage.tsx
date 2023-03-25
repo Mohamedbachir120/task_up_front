@@ -19,6 +19,7 @@ import Header from '../components/Header';
 import { usePerformanceMutation } from '../../features/task/task';
 import { useAppSelector } from '../hooks';
 import { MainUiState } from '../../features/mainUi';
+import NotificationAlert from '../components/Notification';
   
 ChartJS.register(
     CategoryScale,
@@ -62,6 +63,8 @@ function PerformancePage() {
     <div>
         <SideBar active="performances" isOpened={true} /> 
          <Header />
+         <NotificationAlert />
+
          <div className={`d-flex flex-row ${mainUi.margin_left} justify-content-between `}>
          <div className='col-7   mx-2 pt-2'>
          <Line  options={{

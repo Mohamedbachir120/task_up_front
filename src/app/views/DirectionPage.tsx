@@ -5,7 +5,7 @@ import Header from '../components/Header'
 import AddTask from '../components/AddTask'
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { MainUiState, setMainActiveTab } from '../../features/mainUi'
-import { useFetchDepartementTasksQuery, useFetchDepartementTasksStatusQuery, useFetchProjectTasksQuery, useFetchTasksPerPersonnesQuery, useFetchTasksPerProjetcsQuery, useFetchTasksQuery } from '../../features/task/task'
+import { useFetchDepartementTasksQuery, useFetchDepartementTasksStatusQuery, useFetchDirectionTasksStatusQuery, useFetchProjectTasksQuery, useFetchTasksPerPersonnesQuery, useFetchTasksPerProjetcsQuery, useFetchTasksQuery } from '../../features/task/task'
 import { LineComponent, TaskComponent } from './Home'
 import TaskSkeleton from '../components/skeletons/TasksSkeletons'
 import { AuthState } from '../../features/auth/auth-slice'
@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBarsProgress, faPeopleGroup, faProjectDiagram, faTable } from '@fortawesome/free-solid-svg-icons'
 import { FullTask } from '../models/Task'
 
-function DepartementPage() {
+function DirectionPage() {
     const authState = useAppSelector((state:{auth:AuthState})=>state.auth)
     const mainUi = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi)
     const [key, setKey] = useState('home');
@@ -38,11 +38,11 @@ function DepartementPage() {
                 SetActiveTab("projets");
             }} >
               <FontAwesomeIcon icon={faProjectDiagram} /> Projets </li>
-              <li className={(activeTab == "personnes") ? "col-auto px-3 py-2 border-start  bg-white mt-1 active_tab_item" : "col-auto px-3 py-2 border-start  bg-white mt-1 tab_item" } 
+              <li className={(activeTab == "departements") ? "col-auto px-3 py-2 border-start  bg-white mt-1 active_tab_item" : "col-auto px-3 py-2 border-start  bg-white mt-1 tab_item" } 
             onClick={()=>{
-                SetActiveTab("personnes");
+                SetActiveTab("departements");
             }} >
-              <FontAwesomeIcon icon={faPeopleGroup} /> Personnes </li>
+              <FontAwesomeIcon icon={faPeopleGroup} /> Départements </li>
            
 
           
@@ -51,7 +51,7 @@ function DepartementPage() {
 
     {activeTab == "status" && (<TableauComponent />) }    
     {activeTab == "projets" && (<ProjectComponent />)} 
-    {activeTab == "personnes" && (<PersonneComponent />)} 
+    {activeTab == "departements" && (<DepartementComponent />)} 
 
       
 
@@ -89,10 +89,10 @@ function ProjectComponent(){
 
 
 }
-function PersonneComponent(){
+function DepartementComponent(){
     const keyword = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi.refetchKeyword);
     
-    const {data,isFetching,refetch} = useFetchTasksPerPersonnesQuery({keyword});
+    const {data,isFetching,refetch} = useFetchDepartementTasksQuery({keyword});
 
     return(<div>
         <div className='d-flex flex-row mt-3 flex-wrap'>
@@ -122,7 +122,7 @@ function PersonneComponent(){
 function TableauComponent(){
     const keyword = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi.refetchKeyword);
   
-    const {data,isFetching,refetch} = useFetchDepartementTasksStatusQuery({keyword});
+    const {data,isFetching,refetch} = useFetchDirectionTasksStatusQuery({keyword});
   
     const mainUi = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi)
     
@@ -136,7 +136,7 @@ function TableauComponent(){
             <p className='m-1 text-secondary p-2'> À FAIRE  <span className='rounded-circle card d-inline px-1 mx-1'> {data?.todo.length } </span> </p>
           </div>
           <div className='rounded' style={{"maxHeight":"63vh","overflowY":"auto"}}>
-            {!isFetching  && data?.todo.map((todo:FullTask) =>(<TaskComponent  key={todo.id} task={todo} color='text-warning' />))}
+            {!isFetching  && data?.todo.map((todo) =>(<TaskComponent  key={todo.id} task={todo} color='text-warning' />))}
           </div>
        </div>
        <div className='col-3 mx-3'>
@@ -169,4 +169,4 @@ function TableauComponent(){
     )
   }
 
-export default DepartementPage
+export default DirectionPage

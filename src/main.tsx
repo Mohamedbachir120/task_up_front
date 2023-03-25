@@ -20,6 +20,7 @@ import ProjectPage from './app/views/ProjectPage'
 import PerformancePage from './app/views/PerformancePage'
 import DepartementPage from './app/views/DepartementPage'
 import Profil from './app/views/ProfilPage'
+import DirectionPage from './app/views/DirectionPage'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -79,6 +80,14 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           <PrivateWrapper>
 
             <DepartementPage />
+          </PrivateWrapper>
+        }>
+
+        </Route>
+        <Route path='/direction' element={
+          <PrivateWrapper>
+
+            <DirectionPage />
           </PrivateWrapper>
         }>
 

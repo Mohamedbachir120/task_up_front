@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import logo from "../../assets/logo.png"
 import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -10,7 +10,7 @@ import {AiOutlineDown,AiOutlineDoubleLeft} from "react-icons/ai"
 import { IconType } from 'react-icons'
 import { backend_server, randomColor } from '../constantes/constantes'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { MainUiState, hideMarginLeft, initialize, setRapportSideBar, setRefetchInitialAddTask, showModalSeach, triggerRefetchKeywordDoc } from '../../features/mainUi'
+import { MainUiState, hideMarginLeft, initialize, setRapportSideBar, setRefetchInitialAddTask, showModalSeach, showNotification, triggerRefetchKeywordDoc } from '../../features/mainUi'
 import { useAddTaskMutation, useFetchRapportsMutation, useGenerateDepartementReportMutation, useGenerateReportMutation, useSearchQuery } from '../../features/task/task'
 import Loader from './Loader'
 import { Rapport } from '../models/Document'
@@ -20,12 +20,20 @@ import { useDeleteDocumentMutation } from '../../features/task/document'
 import { AuthState } from '../../features/auth/auth-slice'
 import { TaskComponent } from '../views/Home'
 import CustomImage from './Image'
+import { io } from 'socket.io-client'
+
+const socket = io("http://localhost:3000");
 
 function SideBar(params:{active:string,isOpened:boolean}) {
   const dispatch = useAppDispatch();
   const uistate = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi);
   const auth = useAppSelector((state:{auth:AuthState}) => state.auth)
-
+  useEffect(() => {
+    socket.on("receiveNotificationToUser"+auth.id.toString(),(obj)=>{
+      
+      dispatch(showNotification({title:obj.title,body:obj.message}))
+    })
+  }, []);
   if(uistate.margin_left == "margin_left"){ return   (
    
     <div className='side-bar border-end  bg-white'>
@@ -52,6 +60,7 @@ function SideBar(params:{active:string,isOpened:boolean}) {
       <SearchComponent />
       <SideBarItem icon={VscHome} title='Accueil' active={params.active == "home" }  link='/home'/>
       {auth. role == "Chef de département" && (<SideBarItem icon={BsPeople} title='Département' active={params.active == "département" }  link='/departement'/>) }
+      {auth. role == "Directeur" && (<SideBarItem icon={BsPeople} title='Direction' active={params.active == "direction" }  link='/direction'/>) }
 
      <SideBarItem icon={VscBell} title='Notifications' active={params.active == "notifications" }  link='/notifications'/>
       

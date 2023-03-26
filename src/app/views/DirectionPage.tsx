@@ -22,7 +22,7 @@ function DirectionPage() {
   return (
     <div    className='bg-light' style={{"minHeight":"100vh"}}>
          <NotificationAlert />
-        <SideBar active="département" isOpened={false} /> 
+        <SideBar active="direction" isOpened={false} /> 
          <Header />
         <div  className={` ${mainUi.margin_left} `}>
           <div className='d-flex flex-row bg-white border-bottom'>

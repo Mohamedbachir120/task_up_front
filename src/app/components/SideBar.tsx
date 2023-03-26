@@ -14,13 +14,14 @@ import { MainUiState, hideMarginLeft, initialize, setRapportSideBar, setRefetchI
 import { useAddTaskMutation, useFetchRapportsMutation, useGenerateDepartementReportMutation, useGenerateReportMutation, useSearchQuery } from '../../features/task/task'
 import Loader from './Loader'
 import { Rapport } from '../models/Document'
-import { useFetchDepartementProjectsMutation, useStoreProjectMutation } from '../../features/projects/project'
+import { useFetchDepartementProjectsMutation, useFetchStructureDepartementsQuery, useStoreProjectMutation } from '../../features/projects/project'
 import { Project } from '../models/Project'
 import { useDeleteDocumentMutation } from '../../features/task/document'
 import { AuthState } from '../../features/auth/auth-slice'
 import { TaskComponent } from '../views/Home'
 import CustomImage from './Image'
 import { io } from 'socket.io-client'
+import { Departement } from '../models/Departement'
 
 const socket = io("http://localhost:3000");
 
@@ -249,10 +250,13 @@ function ProjectsComponent(){
   const [projects,setProjects] = useState<Project[]>([])
   const [getDepartementProject] = useFetchDepartementProjectsMutation()
   const [projectModal,showProjectModal] = useState(false);
-  const [storeProject,isLoading] = useStoreProjectMutation()
+  const [storeProject] = useStoreProjectMutation()
   const [screen,setScreen] = useState('intial');
+  const [departement,setDepartement] = useState(1)
+  const {data,isLoading} = useFetchStructureDepartementsQuery({});
  const {id} = useParams();
  const dispatch = useAppDispatch();
+ const auth = useAppSelector((state:{auth:AuthState}) => state.auth);
  const[isFixed,setIsFixed] = useState(0)
   return (
   <div className='border-start-0 border-end-0 border mt-3 '>
@@ -323,10 +327,23 @@ function ProjectsComponent(){
           /> 
          
     </InputGroup>
-    <div className='mt-4'>
+    {auth.role == "Directeur" && (
+      <div className='my-2'>
+      <label> Département</label>
+      <select className='form-select' onChange={(e)=>{
+         setDepartement(parseInt(e.target.value))
+      }}>
+          {!isLoading && data?.map((dep:Departement) => (<option value={dep.id} key={dep.id}>
+            {dep.name}</option>))}
+      </select>
+  
+      </div>
+    )}
+    
+    <div className='my-2'>
           <div>
           <label htmlFor="" className='my-2'> Le projet posséde t-il des tâches répétitives ?</label>
-          
+        
           </div>
           <label htmlFor="" className='mx-3'>Non &nbsp; </label>
           <input type='radio' value={"isFixed"} checked={isFixed == 0} onChange={()=>{
@@ -341,7 +358,7 @@ function ProjectsComponent(){
           />
 
           
-          </div>
+      </div>
           </div>)}
           {screen == 'success' && (<div>
             <div className='d-flex flex-row justify-content-center'>
@@ -368,8 +385,9 @@ function ProjectsComponent(){
             
               try {
                   setScreen("loading");
-                  console.log(isFixed)
-                  const  {success,message} = await  storeProject({name:name,is_fixed:isFixed}).unwrap();
+                  const  {success,message} = await 
+                   storeProject({name:name,is_fixed:isFixed,departement:
+                    auth.role == "Directeur" ? departement : undefined }).unwrap();
                   const {data} = await getDepartementProject({keyword:""}).unwrap();
                   setProjects(data); 
                   setScreen("success");

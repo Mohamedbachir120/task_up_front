@@ -157,7 +157,7 @@ function RegisterPage() {
     <Form.Select onChange={(e)=>{
        setDepartement(parseInt(e.target.value))
     }}>
-        {departements.map((dep:Departement) => (<option value={dep.id} key={dep.id}>{dep.designation}</option>))}
+        {departements.map((dep:Departement) => (<option value={dep.id} key={dep.id}>{dep.name}</option>))}
     </Form.Select>
 
     </Form.Group>

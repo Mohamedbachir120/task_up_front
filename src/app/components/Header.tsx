@@ -1,12 +1,12 @@
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button } from 'react-bootstrap'
-import { SearchComponent } from './SideBar'
 import {AiOutlineDoubleRight} from "react-icons/ai";
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { MainUiState, hideMarginLeft, initialize } from '../../features/mainUi'
 import { useLogoutMutation } from '../../features/auth/login';
 import { AuthState, signOut } from '../../features/auth/auth-slice';
+import { SearchComponent } from './SidebarComponents/SearchComponent';
 
 function Header() {
   const uistate = useAppSelector((state:{mainUi:MainUiState}) => state.mainUi);

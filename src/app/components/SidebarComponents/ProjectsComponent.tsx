@@ -144,7 +144,8 @@ export function ProjectsComponent(){
                 <h1 className='text-center text-success'> Projets créé avec succès</h1>
   
               
-              </div>)}
+              </div>)
+              }
           </Modal.Body>
           <Modal.Footer>
           <Button className='btn-light' onClick={()=>{

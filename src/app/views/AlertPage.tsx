@@ -93,11 +93,18 @@ export function AlertComonent(param:{alert:Alert}){
                 <div>
                 {alert.created_at.split('T')[0]}
                 </div>
-             </div>):
+             </div>): 
+             alert.title.includes('Invitation')? 
+             (   <div className='bg-primary text-light p-2 d-flex flex-row justify-content-between'>
+             <div>  <FontAwesomeIcon icon={faBell} />     Invitation </div> 
+             <div> {alert.created_at.split('T')[0]} </div>
+          </div>  ):
              <div className='bg-success text-light p-2 d-flex flex-row justify-content-between'>
                 <div>  <FontAwesomeIcon icon={faBell} />     Tâche  assigné </div> 
                 <div> {alert.created_at.split('T')[0]} </div>
-             </div>   }
+             </div>   
+             
+             }
         
         
     </div>)

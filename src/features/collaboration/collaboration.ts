@@ -18,9 +18,15 @@ export const collaborationSlice = createApi({
                 members:params.members
              }      
           })  
+        }),
+        fetchCollaborations:builder.mutation<Collaboration[],{}>({
+          query:(params) => ({
+            url:"/collaboration",
+            method:"GET"
+          })
         })
     })
 
 })
 
-export const {useAddCollaborationMutation} = collaborationSlice
+export const {useAddCollaborationMutation,useFetchCollaborationsMutation} = collaborationSlice

@@ -1,4 +1,4 @@
-import { faAdd, faGreaterThan, faParagraph, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faGreaterThan, faParagraph, faSearch, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Button, Form, FormControl, FormLabel, InputGroup, Modal, Toast, ToastContainer } from "react-bootstrap";
@@ -9,7 +9,9 @@ import { baseUrl } from "../../constantes/constantes";
 import { Direction } from "../../models/Direction";
 import axios from "axios";
 import { BsEnvelope, BsPeople } from "react-icons/bs";
-import { useAddCollaborationMutation } from "../../../features/collaboration/collaboration";
+import { useAddCollaborationMutation, useFetchCollaborationsMutation } from "../../../features/collaboration/collaboration";
+import { CollaborationComponent } from "./CollaborationComponent";
+import { useParams } from "react-router-dom";
 
 export function CollaborationsComponent(){
   const [showCollaboration,setShowCollaboration] = useState(false)
@@ -20,15 +22,21 @@ export function CollaborationsComponent(){
   const [departements,setDepartements] = useState<Departement[]>([])
   const [error,showError] = useState(false)
   const [CollaborationModal,showCollaborationModal] = useState(false);
-
+  const [getCollaboration] = useFetchCollaborationsMutation();
   const [addCollaboration] = useAddCollaborationMutation();
+  const {id} = useParams();
+
+  const [collaborations,setCollaborations] = useState<Collaboration[]>([]);
   useEffect(  () => {
     async function fetchData(){
         try {
             await axios.get(baseUrl + "departements").then((response: { data: any[]; })=>{
              setDepartements(response.data.map(
                 (e:any) => new Departement(e.id,e.name,new Direction(e.direction.id,e.direction.name))))   
-           })     
+           })    
+           const collab = await getCollaboration({}).unwrap(); 
+           setCollaborations(collab);
+
         } catch (error) {
         }
        
@@ -48,6 +56,9 @@ export function CollaborationsComponent(){
           
           </span>
         </div>
+        {showCollaboration && (
+          <div>
+
         <div className="d-flex flex-row">
           <Button className='btn-grey btn  mx-4 w-100 fs-6 text-secondary my-2' onClick={()=>{
             showCollaborationModal(true)
@@ -56,11 +67,31 @@ export function CollaborationsComponent(){
             
           </Button>
         </div>
+        {collaborations.map((collab)=> (
+          <CollaborationComponent collaboration={collab}  active={parseInt(id ?? "0") == collab.id}   />
+        )
+        )
+        }
+        </div>
+        
+        )}
         <Modal show={CollaborationModal} onHide={()=>{showCollaborationModal(false)}}>
           <Modal.Header closeButton >
             <Modal.Title className='text-violet'>Création d'une nouvelle collaboration </Modal.Title>
           </Modal.Header>
           <Modal.Body>
+          {screen == "success" && <div className=''>
+          <div className='d-flex flex-row justify-content-center'>
+  
+                  <h1 className='bg-success text-light p-4 rounded-circle'>
+                    <FontAwesomeIcon icon={faThumbsUp}  size='2x'/>
+                  </h1>
+
+                  </div>
+                  <h1 className='text-center text-success'> Collaboration créée avec succès</h1>
+
+
+            </div>}
           {screen == "loading" && <div className=''>
             <h5 className='text-center'> création en cours veuillez patientez </h5>
             <div className='d-flex flex-row justify-content-center'>
@@ -143,16 +174,26 @@ placeholder='Sujet de collaboration'
                   }, 2000);
               }else{
                 try {
-
+                  setScreen("loading");
                   
                   const {success, message} = await addCollaboration({
                     topic: topic,
                     description:description,
                     members:data
                   }).unwrap();
+                  setScreen("success");
+
+                  setTimeout(() => {
+                    setScreen('intial');
+                    setTopic('')
+                    setDescription('')
+                    showCollaborationModal(false)
+
+                  }, 2000);
                 } catch (error) {
-                    alert("erreur")
-                    console.log(error)
+                  showCollaborationModal(false)
+
+                    alert("Error")
                 }
                 
 

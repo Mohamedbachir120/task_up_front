@@ -12,6 +12,10 @@ import { BsEnvelope, BsPeople } from "react-icons/bs";
 import { useAddCollaborationMutation, useFetchCollaborationsMutation } from "../../../features/collaboration/collaboration";
 import { CollaborationComponent } from "./CollaborationComponent";
 import { useParams } from "react-router-dom";
+import { Collaboration } from "../../models/Collaboration";
+import { useAppSelector } from "../../hooks";
+import { MainUiState } from "../../../features/mainUi";
+import { Step } from "../../models/Step";
 
 export function CollaborationsComponent(){
   const [showCollaboration,setShowCollaboration] = useState(false)
@@ -25,7 +29,7 @@ export function CollaborationsComponent(){
   const [getCollaboration] = useFetchCollaborationsMutation();
   const [addCollaboration] = useAddCollaborationMutation();
   const {id} = useParams();
-
+  const rebuild  = useAppSelector((state:{mainUi:MainUiState})=> state.mainUi.refetchInvitations)
   const [collaborations,setCollaborations] = useState<Collaboration[]>([]);
   useEffect(  () => {
     async function fetchData(){
@@ -42,7 +46,7 @@ export function CollaborationsComponent(){
        
     }
     fetchData()
-  }, []);
+  }, [rebuild]);
   return (
       <div className='border-start-0 border-end-0 border-top-0 border  '>
       <div className='  side-bar-section d-flex flex-row justify-content-between px-2  py-2'
@@ -68,7 +72,7 @@ export function CollaborationsComponent(){
           </Button>
         </div>
         {collaborations.map((collab)=> (
-          <CollaborationComponent collaboration={collab}  active={parseInt(id ?? "0") == collab.id}   />
+          <CollaborationComponent collaboration={collab}  active={parseInt(id ?? "0") == collab.id}   key={collab.id} />
         )
         )
         }
@@ -224,3 +228,4 @@ placeholder='Sujet de collaboration'
     
     )
   }
+ 

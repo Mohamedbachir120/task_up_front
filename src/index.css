@@ -10,6 +10,13 @@
   color:var(--MAINCOLOR) !important;
 
 }
+.bg-step{
+  background:linear-gradient(120deg,#8043FD,#59C1F9) !important;
+}
+.bg-violet{
+  background:var(--MAINCOLOR) !important;
+
+}
 :not(.popover-positioned){
     -webkit-transition: 200ms linear !important;
     -moz-transition: 200ms linear !important;

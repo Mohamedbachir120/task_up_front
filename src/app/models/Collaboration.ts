@@ -1,4 +1,4 @@
-class Collaboration {
+export class Collaboration {
     constructor(
        public id:number,
        public topic:string,

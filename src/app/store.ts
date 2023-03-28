@@ -9,6 +9,7 @@ import { documentSlice } from "../features/task/document";
 import { alertSlice } from "../features/alerts/alert";
 import { objectifSlice } from "../features/objectif/objectif";
 import { collaborationSlice } from "../features/collaboration/collaboration";
+import { invitationSlice } from "../features/invitation/invitation";
 
 export const store = configureStore({
     reducer:{
@@ -21,7 +22,8 @@ export const store = configureStore({
         [documentSlice.reducerPath]:documentSlice.reducer,
         [alertSlice.reducerPath]:alertSlice.reducer,
         [objectifSlice.reducerPath]:objectifSlice.reducer,
-        [collaborationSlice.reducerPath] : collaborationSlice.reducer
+        [collaborationSlice.reducerPath] : collaborationSlice.reducer,
+        [invitationSlice.reducerPath] : invitationSlice.reducer
 
     },
     
@@ -33,7 +35,8 @@ export const store = configureStore({
             documentSlice.middleware,
             alertSlice.middleware,
             objectifSlice.middleware,
-            collaborationSlice.middleware
+            collaborationSlice.middleware,
+            invitationSlice.middleware
         );
 
     }

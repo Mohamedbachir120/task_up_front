@@ -10,6 +10,9 @@ import { Button, Card, Placeholder } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell, faCheck, faEye } from '@fortawesome/free-solid-svg-icons'
 import NotificationAlert from '../components/Notification'
+import { AiFillDelete, AiOutlineUsergroupAdd } from 'react-icons/ai'
+import { BiTask } from 'react-icons/bi'
+import { VscBell } from 'react-icons/vsc'
 
 function AlertPage() {
     const  [keyword,setKeyword] =  useState('')
@@ -23,9 +26,11 @@ function AlertPage() {
         <SideBar active="notifications" isOpened={false} /> 
          <Header />
          <div  className={` ${mainUi.margin_left} `}>
+         <h2 className='text-secondary mb-3 my-3 mx-5'><VscBell /> Notifications </h2>
+
             {isLoading && (
                 <div>
-         <Card className='mx-5 my-3'  style={{ width: '90%' }}>
+         <Card className='mx-5 m4-3'  style={{ width: '90%' }}>
         <Card.Body>
           <Placeholder as={Card.Title} animation="glow">
             <Placeholder xs={3} />
@@ -59,6 +64,7 @@ function AlertPage() {
         </Card.Body>
       </Card>
       </div>)}
+
             {!isLoading && data?.alerts?.map((alert)=>(<AlertComonent alert={alert} key={alert.id} />))}
         </div>
     </div>
@@ -80,7 +86,7 @@ export function AlertComonent(param:{alert:Alert}){
         </div>
             {alert.title == "Dépechez vous" ?
             (<div className='bg-warning p-2 d-flex flex-row justify-content-between'>
-                <div><FontAwesomeIcon icon={faBell} />     Tâche bientôt expiré</div>
+                <div><BiTask />     Tâche bientôt expiré</div>
                 <div>
                         {alert.created_at.split('T')[0] }
                 </div>    
@@ -88,7 +94,7 @@ export function AlertComonent(param:{alert:Alert}){
              (<div className='bg-danger text-light p-2 d-flex flex-row justify-content-between'>
                 <div>
 
-                <FontAwesomeIcon icon={faBell} />      Tâche  expiré  
+                <BiTask />      Tâche  expiré  
                 </div>
                 <div>
                 {alert.created_at.split('T')[0]}
@@ -96,14 +102,20 @@ export function AlertComonent(param:{alert:Alert}){
              </div>): 
              alert.title.includes('Invitation')? 
              (   <div className='bg-primary text-light p-2 d-flex flex-row justify-content-between'>
-             <div>  <FontAwesomeIcon icon={faBell} />     Invitation </div> 
+             <div>  <AiOutlineUsergroupAdd />     Invitation </div> 
              <div> {alert.created_at.split('T')[0]} </div>
           </div>  ):
-             <div className='bg-success text-light p-2 d-flex flex-row justify-content-between'>
-                <div>  <FontAwesomeIcon icon={faBell} />     Tâche  assigné </div> 
+           alert.title.includes('Suppression')? 
+
+             (<div className='bg-danger text-light p-2 d-flex flex-row justify-content-between'>
+                <div>  <AiFillDelete />     Tâche  supprimé </div> 
                 <div> {alert.created_at.split('T')[0]} </div>
-             </div>   
-             
+             </div>)   
+             :
+             (<div className='bg-success text-light p-2 d-flex flex-row justify-content-between'>
+             <div>  <BiTask />     Tâche  assigné </div> 
+             <div> {alert.created_at.split('T')[0]} </div>
+          </div>)
              }
         
         

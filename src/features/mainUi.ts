@@ -2,7 +2,7 @@ import { createSlice,PayloadAction } from "@reduxjs/toolkit";
 import { Rapport } from "../app/models/Document";
 
 export class MainUiState{
-    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string,refetchKeywordDoc:string,rapportSideBar:Rapport[],welcomeModal:boolean,actifCalendarComponent:string,notificationTitle:string,notificationBody:string,notificationShown:boolean,modalSearch:boolean,refetchInitialAddTask:string)  {
+    constructor (margin_left:string,refetchKeyword:string,mainActiveTab:string,refetchKeywordDoc:string,rapportSideBar:Rapport[],welcomeModal:boolean,actifCalendarComponent:string,notificationTitle:string,notificationBody:string,notificationShown:boolean,modalSearch:boolean,refetchInitialAddTask:string,refetchInvitations:string)  {
            this.margin_left = margin_left
            this.refetchKeyword = refetchKeyword
            this.mainActiveTab = mainActiveTab
@@ -15,6 +15,7 @@ export class MainUiState{
            this.notificationTitle = notificationTitle
            this.modalSearch  = modalSearch
            this.refetchInitialAddTask = refetchInitialAddTask 
+           this.refetchInvitations = refetchInvitations
     }
    
    margin_left:string;
@@ -29,6 +30,7 @@ export class MainUiState{
     notificaionShown:boolean
     modalSearch:boolean
     refetchInitialAddTask:string
+    refetchInvitations:string
 
 
 }
@@ -46,6 +48,7 @@ export class MainUiState{
     notificaionShown:false,
     modalSearch:false,
     refetchInitialAddTask:"",
+    refetchInvitations:""
     
 
     
@@ -102,6 +105,9 @@ const mainUiSlice = createSlice({
         },
         setRefetchInitialAddTask(state,actions){
             state.refetchInitialAddTask = actions.payload
+        },
+        setRefetchInvitation(state,actions){
+            state.refetchInvitations = actions.payload
         }
 
 
@@ -111,7 +117,7 @@ const mainUiSlice = createSlice({
     }
 })
 
-export const { setRapportSideBar, setRefetchInitialAddTask,showModalSeach,showNotification,hideNotification , setActifCalendarComponent ,showWelcomeModal,initialize,hideMarginLeft,triggerRefetch , setMainActiveTab , triggerRefetchKeywordDoc } = mainUiSlice.actions;
+export const { setRefetchInvitation ,setRapportSideBar, setRefetchInitialAddTask,showModalSeach,showNotification,hideNotification , setActifCalendarComponent ,showWelcomeModal,initialize,hideMarginLeft,triggerRefetch , setMainActiveTab , triggerRefetchKeywordDoc } = mainUiSlice.actions;
 export default mainUiSlice.reducer;
 
 

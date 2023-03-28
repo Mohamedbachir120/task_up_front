@@ -21,6 +21,9 @@ import PerformancePage from './app/views/PerformancePage'
 import DepartementPage from './app/views/DepartementPage'
 import Profil from './app/views/ProfilPage'
 import DirectionPage from './app/views/DirectionPage'
+import InvitationPage from './app/views/InvitationPage'
+import { Collaboration } from './app/models/Collaboration'
+import CollaborationPage from './app/views/CollaborationPage'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -97,12 +100,21 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           <ProjectPage   />
         </PrivateWrapper>   
         } >
-
-
+        </Route>
+        <Route path="/collaboration/:id" element={
+          <PrivateWrapper>
+          <CollaborationPage   />
+        </PrivateWrapper>   
+        } >
         </Route>
         <Route path="/settings" element={
           <PrivateWrapper>
             <Profil />
+          </PrivateWrapper>
+        }></Route>
+          <Route path="/invitation" element={
+          <PrivateWrapper>
+            <InvitationPage />
           </PrivateWrapper>
         }></Route>
       </Routes>

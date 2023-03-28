@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {  faGear } from '@fortawesome/free-solid-svg-icons'
 import { VscHome,VscBell,  } from "react-icons/vsc";
 import {BsPeople} from 'react-icons/bs';
-import {AiOutlineDoubleLeft} from "react-icons/ai"
+import {AiOutlineDoubleLeft, AiOutlineUsergroupAdd} from "react-icons/ai"
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { MainUiState, hideMarginLeft,  showNotification } from '../../features/mainUi'
 
@@ -56,6 +56,8 @@ function SideBar(params:{active:string,isOpened:boolean}) {
       <SearchComponent />
       <SideBarItem icon={VscHome} title='Accueil' active={params.active == "home" }  link='/home'/>
       {auth. role == "Chef de département" && (<SideBarItem icon={BsPeople} title='Département' active={params.active == "département" }  link='/departement'/>) }
+      {auth. role == "Chef de département" && (<SideBarItem icon={AiOutlineUsergroupAdd} title='Invitations' active={params.active == "invitation" }  link='/invitation'/>) }
+     
       {auth. role == "Directeur" && (<SideBarItem icon={BsPeople} title='Direction' active={params.active == "direction" }  link='/direction'/>) }
 
      <SideBarItem icon={VscBell} title='Notifications' active={params.active == "notifications" }  link='/notifications'/>
